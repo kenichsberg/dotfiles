@@ -33,6 +33,8 @@ Plugin 'alvan/vim-closetag'
 Plugin 'dense-analysis/ale'
 Plugin 'luochen1990/rainbow'
 Plugin 'ryanoasis/vim-devicons'
+Plugin 'gabrielelana/vim-markdown'
+Plugin 'previm/previm'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
