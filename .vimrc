@@ -50,7 +50,7 @@ colorscheme PaperColor
 "
 "----------------------------
 "NERDTree
-nnoremap <silent><C-e> :NERDTreeToggle<CR>
+"nnoremap <silent><C-e> :NERDTreeToggle<CR>
 " 隠しファイルを表示する
 let NERDTreeShowHidden = 1
 " デフォルトでツリーを表示させる
@@ -58,7 +58,8 @@ let g:nerdtree_tabs_open_on_console_startup=1
 " 他のバッファをすべて閉じた時にNERDTreeが開いていたらNERDTreeも一緒に閉じる。
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-map <Leader>n <plug>NERDTreeTabsToggle<CR>
+nnoremap <Space>e :NERDTreeToggle<CR>
+nnoremap <Space>f :NERDTreeFind<CR>
 
 "----------------------------
 "closetag
@@ -234,6 +235,12 @@ nmap <Esc><Esc> :nohlsearch<CR><Esc>
 "キーマップ
 "escキーをjjに割り当てる
 inoremap <silent> jj <ESC>
+
+"ミス多発のため小文字化は殺す
+vnoremap u <Nop>
+
+vnoremap ZQ <Nop>
+vnoremap ZZ <Nop>
 
 "---------------------------------------------------------------------------
 "分割表示・タブ表示関連
