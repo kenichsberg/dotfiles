@@ -104,6 +104,14 @@ let g:ale_linters = {
   \   'typescript': ['tsserver', 'eslint'],
   \   'vue': ['eslint']
   \ }
+"自動整形の設定
+"let g:ale_fixers = {
+      \ 'javascript': ['prettier'],
+      \ 'markdown': [
+      \   {buffer, lines -> {'command': 'textlint -c ~/.config/textlintrc -o /dev/null --fix --no-color --quiet %t', 'read_temporary_file': 1}}
+      \   ],
+      \ }
+let g:ale_fix_on_save = 1
 
 "----------------------------
 "rainbow
@@ -230,6 +238,9 @@ set wrapscan
 set hlsearch
 " ESC連打でハイライト解除
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
+
+"vimgrep -> 自動的にquickfix-windowを開く
+autocmd QuickFixCmdPost *grep* cwindow
 
 "---------------------------------------------------------------------------
 "キーマップ
