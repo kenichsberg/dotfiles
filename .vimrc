@@ -1,9 +1,9 @@
 scriptencoding utf-8
 "メニューバーを読み込まない
-set guioptions& guioptions+=M
+"set guioptions& guioptions+=M
 
 set nocompatible              " be iMproved, required
-filetype off                  " required
+filetype on                   " required
 
 " set the runtime path to include Vundle and initialize
 "path for winPC// set rtp+=$VIM\.vim\bundle\Vundle.vim
@@ -25,6 +25,9 @@ Plugin 'tpope/vim-surround'
 Plugin 'pangloss/vim-javascript'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'peitalin/vim-jsx-typescript'
+Plugin 'maxmellon/vim-jsx-pretty'
+Plugin 'jparise/vim-graphql'
+Plugin 'styled-components/vim-styled-components'
 Plugin 'hail2u/vim-css3-syntax'
 Plugin 'othree/html5.vim'
 Plugin 'vim-scripts/YankRing.vim'
@@ -32,6 +35,7 @@ Plugin 'vim-scripts/YankRing.vim'
 Plugin 'alvan/vim-closetag'
 "Plugin 'tyru/open-browser.vim'
 Plugin 'dense-analysis/ale'
+Plugin 'prettier/vim-prettier'
 Plugin 'luochen1990/rainbow'
 Plugin 'ryanoasis/vim-devicons'
 Plugin 'gabrielelana/vim-markdown'
@@ -42,15 +46,17 @@ call vundle#end()            " required
 filetype plugin indent on    " required
 
 "-----------------------------------------------------------------------
-"テーマ設定
+" Theme
+"-----------------------------------------------------------------------
 set background=dark
 colorscheme PaperColor
+
 "-----------------------------------------------------------------------
-"各プラグイン用の設定
-"
+" Config for each plugin
+"-----------------------------------------------------------------------
 "----------------------------
-"NERDTree
-"nnoremap <silent><C-e> :NERDTreeToggle<CR>
+" #NERDTree
+"----------------------------
 " 隠しファイルを表示する
 let NERDTreeShowHidden = 1
 " デフォルトでツリーを表示させる
@@ -62,11 +68,13 @@ nnoremap <Space>e :NERDTreeToggle<CR>
 nnoremap <Space>f :NERDTreeFind<CR>
 
 "----------------------------
-"closetag
-let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.php,*.ctp,*.js'
+" #closetag
+"----------------------------
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.php,*.ctp,*.js,*.jsx,*.ts,*.tsx'
 
 "----------------------------
-"airline
+" #airline
+"----------------------------
 let g:airline_powerline_fonts = 1
 set laststatus=2
 let g:airline_theme = 'luna'
@@ -76,7 +84,8 @@ let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline#extensions#tabline#formatter = 'default'
 
 "----------------------------
-"indent-guides
+" #indent-guides
+"----------------------------
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_auto_colors = 0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#24323b   ctermbg=235
@@ -84,7 +93,8 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#243b3b   ctermbg=237
 let g:indent_guides_guide_size = 1
 
 "----------------------------
-"ale
+" #ale
+"----------------------------
 let g:airline#extensions#ale#enabled = 1
 "let g:ale_statusline_format = ['E%d', 'W%d', '']
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
@@ -92,33 +102,48 @@ nmap <silent> <C-j> <Plug>(ale_next_wrap)
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-"eslint_dを利用するための設定
+"enable eslint_d
 if executable('eslint_d')
-  let g:ale_javascript_eslint_use_global = 1
   let g:ale_javascript_eslint_executable = 'eslint_d'
+  let g:ale_javascript_eslint_use_global = 1
 endif
+let g:ale_json_jsonlint_use_global = 1
+let g:ale_json_jsonlint_executable = '/Users/tsc/.nvm/versions/node/v14.13.1/bin/jsonlint'
 
 let g:ale_linters_explicit = 1
 let g:ale_linters = {
   \   'javascript': ['eslint'],
+  \   'javascriptreact': ['eslint'],
   \   'typescript': ['tsserver', 'eslint'],
-  \   'vue': ['eslint']
+  \   'typescriptreact': ['tsserver', 'eslint'],
+  \   'json': ['jsonlint'],
   \ }
-"自動整形の設定
-"let g:ale_fixers = {
+"config for auto formatting
+let g:ale_fixers = {
       \ 'javascript': ['prettier'],
+      \ 'javascriptreact': ['prettier'],
+      \ 'typescript': ['prettier'],
+      \ 'typescriptreact': ['prettier'],
+      \ 'css': ['prettier'],
       \ 'markdown': [
       \   {buffer, lines -> {'command': 'textlint -c ~/.config/textlintrc -o /dev/null --fix --no-color --quiet %t', 'read_temporary_file': 1}}
       \   ],
       \ }
 let g:ale_fix_on_save = 1
 
+"use local config
+let g:ale_javascript_prettier_use_local_config = 1
+let g:ale_typescript_prettier_use_local_config = 1
+
+
 "----------------------------
-"rainbow
+" #rainbow
+"----------------------------
 let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 
 "----------------------------
-"vim-devicons
+" #vim-devicons
+"----------------------------
 "set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ 12
 "" フォルダアイコンを表示
 "let g:WebDevIconsNerdTreeBeforeGlyphPadding = ""
@@ -131,33 +156,35 @@ let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowTo
 
 "-----------------------------------------------------------------------
 " setting
-"文字コードをUFT-8に設定
+"-----------------------------------------------------------------------
+"----------------------------
+" Handling files
+"----------------------------
+" encode
 set fenc=utf-8
 set encoding=utf-8
 set fileformats=unix,dos,mac
-"set clipboard+=unnamed "yankとクリップボードを使い分けできたほうが便利なためmacOS以外では不要 
 
+" swap & backup files
 "set nobackup
 "set noswapfile
 
-" swpファイル出力先
+" swp file directory
 set directory=~/.vim/tmp/swap
-" バックアップファイル出力先
+" backup file directory
 set backupdir=~/.vim/tmp/backup
-" undoファイル出力先
+" undo file directory
 set undodir=~/.vim/tmp/undo
-" 編集中のファイルが変更されたら自動で読み直す
+" automatically refresh file when edited externally
 set autoread
-" バッファが編集中でもその他のファイルを開けるように
+" allow to open files even when buffers are editing
 set hidden
-" 入力中のコマンドをステータスに表示する
+" display command input in status line
 set showcmd
 
-"" autofmt: 日本語文章のフォーマット(折り返し)プラグイン.
-"set formatexpr=autofmt#japanese#formatexpr()
-
-"-----------------------------------------------------------------------
-" 見た目系
+"----------------------------
+" Preferences
+"----------------------------
 " 行番号を表示
 set number
 " 現在の行を強調表示
@@ -179,9 +206,6 @@ nnoremap j gj
 nnoremap k gk
 " シンタックスハイライトの有効化
 syntax enable
-
-"---------------------------------------------------------------------------
-" GUI固有ではない画面表示の設定:
 " ルーラーを表示 (noruler:非表示)
 set ruler
 " タブや改行を非表示 (list:表示)
@@ -199,22 +223,27 @@ set showcmd
 " タイトルを表示
 set title
 
-"---------------------------------------------------------------------------
-" タブ&インデント
+"----------------------------
+" tab & indent
+"----------------------------
 " 不可視文字を可視化(タブが「@-」と表示される)
 set list listchars=tab:\@\-
+" 自動的にインデントする (noautoindent:インデントしない)
+set autoindent
+" 改行時に入力された行の末尾に合わせて次の行のインデントを増減する
+set smartindent
+" c program file
+set cindent
+" 行頭の余白内で Tab を打ち込むと、'shiftwidth' の数だけインデントする
+set smarttab
 " Tab文字を半角スペースにする
 set expandtab
 " 行頭以外のTab文字の表示幅（スペースいくつ分）
 set tabstop=2
 " 行頭でのTab文字の表示幅
 set shiftwidth=2
-" 行頭の余白内で Tab を打ち込むと、'shiftwidth' の数だけインデントする
-set smarttab
-" 自動的にインデントする (noautoindent:インデントしない)
-set autoindent
-" 改行時に入力された行の末尾に合わせて次の行のインデントを増減する
-set smartindent
+" keyboard
+set softtabstop=2
 " バックスペースでインデントや改行を削除できるようにする
 set backspace=indent,eol,start
 " 検索時にファイルの最後まで行ったら最初に戻る (nowrapscan:戻らない)
@@ -224,8 +253,13 @@ set wildmenu
 " テキスト挿入中の自動折り返しを日本語に対応させる
 set formatoptions+=mM
 
-"---------------------------------------------------------------------------
-" 検索系
+filetype plugin on
+filetype indent on
+autocmd FileType php setlocal sw=4 sts=4 ts=4 et
+
+"----------------------------
+" Search
+"----------------------------
 " 検索文字列が小文字の場合は大文字小文字を区別なく検索する
 set ignorecase
 " 検索文字列に大文字が含まれている場合は区別して検索する
@@ -242,8 +276,9 @@ nmap <Esc><Esc> :nohlsearch<CR><Esc>
 "vimgrep -> 自動的にquickfix-windowを開く
 autocmd QuickFixCmdPost *grep* cwindow
 
-"---------------------------------------------------------------------------
-"キーマップ
+"----------------------------
+" Key mapping
+"----------------------------
 "escキーをjjに割り当てる
 inoremap <silent> jj <ESC>
 
@@ -253,8 +288,9 @@ vnoremap u <Nop>
 vnoremap ZQ <Nop>
 vnoremap ZZ <Nop>
 
-"---------------------------------------------------------------------------
-"分割表示・タブ表示関連
+"----------------------------
+" panes of windows
+"----------------------------
 nnoremap s <Nop>
 nnoremap sj <C-w>j
 nnoremap sk <C-w>k
