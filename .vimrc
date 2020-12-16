@@ -5,45 +5,48 @@ scriptencoding utf-8
 set nocompatible              " be iMproved, required
 filetype on                   " required
 
-" set the runtime path to include Vundle and initialize
-"path for winPC// set rtp+=$VIM\.vim\bundle\Vundle.vim
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+"" set the runtime path to include Vundle and initialize
+""path for winPC// set rtp+=$VIM\.vim\bundle\Vundle.vim
+"set rtp+=~/.vim/bundle/Vundle.vim
+"call vundle#begin()
+"
+"Plugin 'VundleVim/Vundle.vim'
+"" !! write plugins here !!
+call plug#begin('~/.vim/plugged')
 
-Plugin 'VundleVim/Vundle.vim'
-" !! write plugins here !!
-Plugin 'airblade/vim-gitgutter'
-Plugin 'tpope/vim-fugitive'
-Plugin 'NLKNguyen/papercolor-theme'
-Plugin 'preservim/nerdtree'
-Plugin 'jistr/vim-nerdtree-tabs'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'nathanaelkane/vim-indent-guides'
-Plugin 'mattn/emmet-vim'
-Plugin 'tpope/vim-surround'
-Plugin 'pangloss/vim-javascript'
-Plugin 'leafgarland/typescript-vim'
-Plugin 'peitalin/vim-jsx-typescript'
-Plugin 'maxmellon/vim-jsx-pretty'
-Plugin 'jparise/vim-graphql'
-Plugin 'styled-components/vim-styled-components'
-Plugin 'hail2u/vim-css3-syntax'
-Plugin 'othree/html5.vim'
-Plugin 'vim-scripts/YankRing.vim'
-"Plugin 'vim-scripts/Changed'
-Plugin 'alvan/vim-closetag'
-"Plugin 'tyru/open-browser.vim'
-Plugin 'dense-analysis/ale'
-Plugin 'prettier/vim-prettier'
-Plugin 'luochen1990/rainbow'
-Plugin 'ryanoasis/vim-devicons'
-Plugin 'gabrielelana/vim-markdown'
-Plugin 'previm/previm'
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'preservim/nerdtree'
+Plug 'jistr/vim-nerdtree-tabs'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'nathanaelkane/vim-indent-guides'
+Plug 'mattn/emmet-vim'
+Plug 'tpope/vim-surround'
+Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
+"Plug 'peitalin/vim-jsx-typescript'
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'jparise/vim-graphql'
+Plug 'styled-components/vim-styled-components'
+Plug 'hail2u/vim-css3-syntax'
+Plug 'othree/html5.vim'
+Plug 'vim-scripts/YankRing.vim'
+Plug 'alvan/vim-closetag'
+Plug 'dense-analysis/ale'
+Plug 'prettier/vim-prettier'
+"Plug 'luochen1990/rainbow'
+Plug 'ryanoasis/vim-devicons'
+Plug 'gabrielelana/vim-markdown'
+Plug 'previm/previm'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
+"" All of your Plugins must be added before the following line
+"call vundle#end()            " required
+"filetype plugin indent on    " required
+call plug#end()
 
 "-----------------------------------------------------------------------
 " Theme
