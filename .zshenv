@@ -1,7 +1,6 @@
 export LANG=ja_JP.UTF-8
 export PATH="$PATH:/usr/local/opt/icu4c/bin"
 export PATH="$PATH:/usr/local/opt/icu4c/sbin"
-#export PATH="$PATH:/usr/local/opt/node@8/bin"
 export ANDROID_SDK=/Users/tsc/Library/Android/sdk
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
