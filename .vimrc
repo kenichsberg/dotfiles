@@ -35,6 +35,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'gabrielelana/vim-markdown'
 Plug 'previm/previm'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'will133/vim-dirdiff'
 
 call plug#end()
 
