@@ -8,7 +8,7 @@ fi
 ########################
 # original scripts
 ########################
-alias ls='gls --color=auto -laF'
+alias ls='gls --color=auto -laFh'
 
 alias find=gfind
 alias xargs=gxargs
