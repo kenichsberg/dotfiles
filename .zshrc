@@ -70,3 +70,4 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 if [[ ! -n $TMUX ]]; then
   tmux new-session -s tsc -d
 fi
+[ -f "/Users/tsc/.ghcup/env" ] && source "/Users/tsc/.ghcup/env" # ghcup-env
