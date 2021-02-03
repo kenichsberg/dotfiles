@@ -135,17 +135,6 @@ let g:ale_typescript_prettier_use_local_config = 1
 ""----------------------------
 "let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 
-"----------------------------
-" #vim-devicons
-"----------------------------
-"set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Nerd\ Font\ Complete\ 12
-"" フォルダアイコンを表示
-"let g:WebDevIconsNerdTreeBeforeGlyphPadding = ""
-"let g:WebDevIconsUnicodeDecorateFolderNodes = v:true
-"" after a re-source, fix syntax matching issues (concealing brackets):
-"if exists('g:loaded_webdevicons')
-"  call webdevicons#refresh()
-"endif
 
 "----------------------------
 " #CoC
