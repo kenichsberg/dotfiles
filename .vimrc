@@ -175,7 +175,7 @@ endif
 
 
 "-----------------------------------------------------------------------
-" setting
+" settings
 "-----------------------------------------------------------------------
 "----------------------------
 " Handling files
@@ -336,6 +336,8 @@ nnoremap sv :<C-u>vs<CR>
 nnoremap sq :<C-u>q<CR>
 nnoremap sQ :<C-u>bd<CR>
 
+"----------------------------
+"----------------------------
 "get rid of [  ] around icons in NerdTree
 syntax enable
 if exists("g:loaded_webdevicons")
