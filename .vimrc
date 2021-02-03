@@ -130,12 +130,6 @@ let g:ale_javascript_prettier_use_local_config = 1
 let g:ale_typescript_prettier_use_local_config = 1
 
 
-""----------------------------
-"" #rainbow
-""----------------------------
-"let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
-
-
 "----------------------------
 " #CoC
 "----------------------------
