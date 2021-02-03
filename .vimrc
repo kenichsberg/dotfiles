@@ -5,13 +5,6 @@ scriptencoding utf-8
 set nocompatible              " be iMproved, required
 filetype on                   " required
 
-"" set the runtime path to include Vundle and initialize
-""path for winPC// set rtp+=$VIM\.vim\bundle\Vundle.vim
-"set rtp+=~/.vim/bundle/Vundle.vim
-"call vundle#begin()
-"
-"Plugin 'VundleVim/Vundle.vim'
-"" !! write plugins here !!
 call plug#begin('~/.vim/plugged')
 
 Plug 'airblade/vim-gitgutter'
@@ -43,9 +36,6 @@ Plug 'gabrielelana/vim-markdown'
 Plug 'previm/previm'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-"" All of your Plugins must be added before the following line
-"call vundle#end()            " required
-"filetype plugin indent on    " required
 call plug#end()
 
 "-----------------------------------------------------------------------
