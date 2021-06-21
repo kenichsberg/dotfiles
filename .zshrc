@@ -30,6 +30,14 @@ if type brew &>/dev/null; then
   compinit
 fi
 
+function dirdiff()
+{
+  # Shell-escape each path:
+  DIR1=$(printf '%q' "$1"); shift
+  DIR2=$(printf '%q' "$1"); shift
+  vim $@ -c "DirDiff $DIR1 $DIR2"
+}
+
 # prompt formatting (For env WITHOUT zinit)
 #export PROMPT='%F{blue}%T%f %F{cyan]}%n %B%1~%b%f %F{cyan}%B%#%b%f '
 ########################
@@ -70,4 +78,6 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 if [[ ! -n $TMUX ]]; then
   tmux new-session -s tsc -d
 fi
+
+# ghcup
 [ -f "/Users/tsc/.ghcup/env" ] && source "/Users/tsc/.ghcup/env" # ghcup-env
