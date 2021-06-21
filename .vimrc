@@ -36,6 +36,7 @@ Plug 'gabrielelana/vim-markdown'
 Plug 'previm/previm'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'will133/vim-dirdiff'
+Plug 'tpope/vim-obsession'
 
 call plug#end()
 
