@@ -63,11 +63,6 @@ nnoremap <Space>e :NERDTreeToggle<CR>
 nnoremap <Space>f :NERDTreeFind<CR>
 
 "----------------------------
-" #closetag
-"----------------------------
-let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.php,*.ctp,*.js,*.jsx,*.ts,*.tsx'
-
-"----------------------------
 " #airline
 "----------------------------
 let g:airline_powerline_fonts = 1
@@ -240,7 +235,7 @@ set showcmd
 set title
 
 "----------------------------
-" tab & indent
+" Tabs & indent
 "----------------------------
 " 不可視文字を可視化(タブが「@-」と表示される)
 set list listchars=tab:\@\-
@@ -295,17 +290,28 @@ autocmd QuickFixCmdPost *grep* cwindow
 "----------------------------
 " Key mapping
 "----------------------------
-"escキーをjjに割り当てる
+" asign esc key to 'jj'
 inoremap <silent> jj <ESC>
 
-"ミス多発のため小文字化は殺す
+" toggle paste mode
+"nnoremap <F2> :set invpaste paste?<CR>
+set pastetoggle=<F2>
+"set showmode
+
+" reload syntax highlighting
+noremap <F5> <Esc>:syntax sync fromstart<CR>
+inoremap <F5> <C-o>:syntax sync fromstart<CR>
+
+" kill function converting lowercase to prevent accidental typing
+" *not to mix it up with undo in normal mode
 vnoremap u <Nop>
 
+" kill some shortcuts to prevent accidental typing
 vnoremap ZQ <Nop>
 vnoremap ZZ <Nop>
 
 "----------------------------
-" panes of windows
+" Control panes of windows
 "----------------------------
 nnoremap s <Nop>
 nnoremap sj <C-w>j
@@ -332,10 +338,45 @@ nnoremap sv :<C-u>vs<CR>
 nnoremap sq :<C-u>q<CR>
 nnoremap sQ :<C-u>bd<CR>
 
+
 "----------------------------
+" OTHER SETTINGS
 "----------------------------
-"get rid of [  ] around icons in NerdTree
-syntax enable
+" get rid of [  ] around icons in NerdTree
+"----------------------------
 if exists("g:loaded_webdevicons")
   call webdevicons#refresh()
 endif
+
+"----------------------------
+" unable 'cursorline'
+"----------------------------
+augroup vimrc-auto-cursorline
+autocmd!
+autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
+autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
+autocmd WinEnter * call s:auto_cursorline('WinEnter')
+autocmd WinLeave * call s:auto_cursorline('WinLeave')
+
+let s:cursorline_lock = 0
+function! s:auto_cursorline(event)
+  if a:event ==# 'WinEnter'
+    setlocal cursorline
+    let s:cursorline_lock = 2
+  elseif a:event ==# 'WinLeave'
+    setlocal nocursorline
+  elseif a:event ==# 'CursorMoved'
+    if s:cursorline_lock
+      if 1 < s:cursorline_lock
+        let s:cursorline_lock = 1
+      else
+        setlocal nocursorline
+        let s:cursorline_lock = 0
+      endif
+    endif
+  elseif a:event ==# 'CursorHold'
+    setlocal cursorline
+    let s:cursorline_lock = 1
+  endif
+endfunction
+augroup END
