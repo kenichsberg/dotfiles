@@ -1,44 +1,63 @@
 scriptencoding utf-8
-"メニューバーを読み込まない
-"set guioptions& guioptions+=M
 
 set nocompatible              " be iMproved, required
 filetype on                   " required
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'airblade/vim-gitgutter'
-Plug 'tpope/vim-fugitive'
+" for preferences
 Plug 'NLKNguyen/papercolor-theme'
-Plug 'preservim/nerdtree'
-Plug 'jistr/vim-nerdtree-tabs'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'nathanaelkane/vim-indent-guides'
-Plug 'mattn/emmet-vim'
-Plug 'tpope/vim-surround'
-Plug 'pangloss/vim-javascript'
-Plug 'leafgarland/typescript-vim'
-"Plug 'peitalin/vim-jsx-typescript'
-Plug 'maxmellon/vim-jsx-pretty'
-Plug 'jparise/vim-graphql'
-Plug 'styled-components/vim-styled-components'
-Plug 'hail2u/vim-css3-syntax'
-Plug 'othree/html5.vim'
-Plug 'vim-scripts/YankRing.vim'
-"Plug 'alvan/vim-closetag'
-Plug 'dense-analysis/ale'
-Plug 'prettier/vim-prettier'
-"Plug 'luochen1990/rainbow'
 Plug 'ryanoasis/vim-devicons'
-Plug 'gabrielelana/vim-markdown'
-Plug 'previm/previm'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'will133/vim-dirdiff'
+
+" handling folders and files
+Plug 'preservim/nerdtree'
+Plug 'jistr/vim-nerdtree-tabs'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'ctrlpvim/ctrlp.vim'
+
+" git
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
+
+" tmux
 Plug 'tpope/vim-obsession'
 
+" for input
+Plug 'maxbrunsfeld/vim-yankstack'
+Plug 'mattn/emmet-vim'
+Plug 'tpope/vim-surround'
+
+" CoC
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+Plug 'will133/vim-dirdiff'
+
+Plug 'othree/html5.vim'
+Plug 'hail2u/vim-css3-syntax'
+
+" js/ts
+Plug 'dense-analysis/ale'
+Plug 'prettier/vim-prettier', {'for': ['javascript', 'typescript', 'javascriptreact', 'typescriptreact']}
+Plug 'pangloss/vim-javascript', {'for': ['javascript', 'javascriptreact']}
+Plug 'leafgarland/typescript-vim', {'for': ['typescript', 'typescriptreact']}
+Plug 'maxmellon/vim-jsx-pretty', {'for': ['javascript', 'typescript', 'javascriptreact', 'typescriptreact']}
+Plug 'jparise/vim-graphql'
+Plug 'styled-components/vim-styled-components'
+
+" md
+Plug 'gabrielelana/vim-markdown', {'for': 'markdown'}
+Plug 'previm/previm'
+
+" clojure
+Plug 'guns/vim-sexp', {'for': 'clojure'}
+Plug 'liquidz/vim-iced', {'for': 'clojure'}
+Plug 'liquidz/vim-iced-coc-source', {'for': 'clojure'}
+
 call plug#end()
+
 
 "-----------------------------------------------------------------------
 " Theme
@@ -46,21 +65,207 @@ call plug#end()
 set background=dark
 colorscheme PaperColor
 
+
 "-----------------------------------------------------------------------
-" Config for each plugin
+" settings
+"-----------------------------------------------------------------------
+"----------------------------
+" Handling files
+"----------------------------
+" encode
+set fenc=utf-8
+set encoding=utf-8
+set fileformats=unix,dos,mac
+
+".viminfo file path
+set viminfo=%,<800,'10,/50,:100,h,f0,n~/.vim/temp/.viminfo
+" swp file directory
+set directory=~/.vim/tmp/swap
+" backup file directory
+set backupdir=~/.vim/tmp/backup
+" undo file directory
+set undodir=~/.vim/tmp/undo
+" automatically refresh file when edited externally
+set autoread
+" allow to open files even when buffers are editing
+set hidden
+" display command input in status line
+set showcmd
+
+"----------------------------
+" Preferences
+"----------------------------
+" show row number
+set number
+" show current row
+set cursorline
+" move cursor onemore the end of row
+set virtualedit=onemore
+" visualize beep sound
+set visualbell
+" show matching parenthesis
+set showmatch
+" show status line
+set laststatus=2
+" autocompletion for command line
+set wildmode=list:longest
+" move cusor for rows shown
+nnoremap j gj
+nnoremap k gk
+" syntax highlighting
+syntax enable
+" show rouler
+set ruler
+" タブや改行を非表示 (list:表示)
+set nolist
+" show long rows with wrapping
+set wrap
+" height of command line 
+set cmdheight=2
+" show command in status line
+set showcmd
+" show title
+set title
+
+"----------------------------
+" Tabs & indent
+"----------------------------
+" show tab by '>-'
+"set listchars=tab:>-,extends:<,trail:-,eol:<
+set list listchars=tab:>-
+" indent automatically
+set autoindent
+set smartindent
+" for c program file
+set cindent
+" use tab key for adding space of the amount of 'shiftwidth'
+set smarttab
+" replace tab to space
+set expandtab
+" except for the start of row, tab will be the following amount of space 
+set tabstop=2
+" at the start of row, tab will be the following amount of space 
+set shiftwidth=2
+" keyboard
+set softtabstop=2
+" enable deleting by backspace
+set backspace=indent,eol,start
+" cf. :help wildmenu
+set wildmenu
+" for Japanese language
+set formatoptions+=mM
+
+filetype plugin on
+filetype indent on
+autocmd FileType php setlocal sw=4 sts=4 ts=4 et
+
+"----------------------------
+" Search
+"----------------------------
+" ignore case when keyword is in lowercase
+set ignorecase
+" distinguish case when keyword includes uppercase
+set smartcase
+
+set incsearch
+" loop searching words from bottom of the file to the top
+set wrapscan
+" highlighting the keyword
+set hlsearch
+" remove highlighted by hitting enter key
+nnoremap <silent> <CR> :nohlsearch<CR><CR>
+
+"on vimgrep -> open quickfix-window automatically
+autocmd QuickFixCmdPost *grep* cwindow
+
+"----------------------------
+" Other Settings
+"----------------------------
+" register yanked string to clipboard
+"set clipboard=unnamedplus
+
+"----------------------------
+" Key mapping
+"----------------------------
+" leader
+let mapleader="\<Space>"
+nnoremap <Space> <Nop>
+
+" swap colon with semicolon
+noremap ; :
+noremap : ;
+
+" asign esc key to 'jj'
+inoremap <silent> jj <ESC>
+
+" toggle paste mode
+set pastetoggle=<F2>
+
+" reload syntax highlighting
+noremap <F5> <Esc>:syntax sync fromstart<CR>
+inoremap <F5> <C-o>:syntax sync fromstart<CR>
+
+" kill function converting lowercase to prevent accidental typing
+" *not to mix it up with undo in normal mode
+vnoremap u <Nop>
+
+" kill some shortcuts to prevent accidental typing
+vnoremap ZQ <Nop>
+vnoremap ZZ <Nop>
+
+"----------------------------
+" Controling panes on a window
+"----------------------------
+nnoremap s <Nop>
+nnoremap sj <C-w>j
+nnoremap sk <C-w>k
+nnoremap sl <C-w>l
+nnoremap sh <C-w>h
+nnoremap sJ <C-w>J
+nnoremap sK <C-w>K
+nnoremap sL <C-w>L
+nnoremap sH <C-w>H
+nnoremap sn gt
+nnoremap sp gT
+nnoremap sr <C-w>r
+nnoremap s= <C-w>=
+nnoremap sw <C-w>w
+nnoremap so <C-w>_<C-w>|
+nnoremap sO <C-w>=
+nnoremap sN :<C-u>bn<CR>
+nnoremap sP :<C-u>bp<CR>
+nnoremap st :<C-u>tabnew<CR>
+nnoremap ss :<C-u>sp<CR>
+nnoremap sv :<C-u>vs<CR>
+nnoremap sq :<C-u>q<CR>
+nnoremap sQ :<C-u>bd<CR>
+
+" resizing panes
+" resize height
+nnoremap sdj <C-w>-
+nnoremap sdk <C-w>+
+" resize width
+nnoremap sdh <C-w><
+nnoremap sdl <C-w>>
+
+
+"-----------------------------------------------------------------------
+" Config for plugins
 "-----------------------------------------------------------------------
 "----------------------------
 " #NERDTree
 "----------------------------
-" 隠しファイルを表示する
+" show hidden files
 let NERDTreeShowHidden = 1
-" デフォルトでツリーを表示させる
-let g:nerdtree_tabs_open_on_console_startup=1
-" 他のバッファをすべて閉じた時にNERDTreeが開いていたらNERDTreeも一緒に閉じる。
+" hide tree by default
+let g:nerdtree_tabs_open_on_console_startup=0
+" close buffer if only nerdtree is remained
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-nnoremap <Space>e :NERDTreeToggle<CR>
-nnoremap <Space>f :NERDTreeFind<CR>
+" toggle tree
+nnoremap <leader>ff :NERDTreeToggle<CR>
+" find the file where cursor is in tree
+nnoremap <leader>fd :NERDTreeFind<CR>
 
 "----------------------------
 " #airline
@@ -81,6 +286,12 @@ let g:indent_guides_auto_colors = 0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#24323b   ctermbg=235
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#243b3b   ctermbg=237
 let g:indent_guides_guide_size = 1
+
+"----------------------------
+" #vim-yankstack
+"----------------------------
+nmap <leader>p <Plug>yankstack_substitute_older_paste
+nmap <leader>P <Plug>yankstack_substitute_newer_paste
 
 "----------------------------
 " #ale
@@ -107,6 +318,7 @@ let g:ale_linters = {
   \   'typescript': ['tsserver', 'eslint'],
   \   'typescriptreact': ['tsserver', 'eslint'],
   \   'json': ['jsonlint'],
+  \   'clojure': ['clj-kondo', 'joker'],
   \ }
 "config for auto formatting
 let g:ale_fixers = {
@@ -130,7 +342,12 @@ let g:ale_typescript_prettier_use_local_config = 1
 " #CoC
 "----------------------------
 " CoC extensions
-let g:coc_global_extensions = ['coc-solargraph', 'coc-tsserver', 'coc-json']
+let g:coc_global_extensions = [
+  \ 'coc-solargraph',
+  \ 'coc-tsserver', 
+  \ 'coc-json',
+  \ 'coc-diagnostic',
+  \ ]
 
 " Add CoC Prettier if prettier is installed
 if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
@@ -163,180 +380,20 @@ if has('nvim-0.4.0') || has('patch-8.2.0750')
 endif
 
 
-
-
-"-----------------------------------------------------------------------
-" settings
-"-----------------------------------------------------------------------
 "----------------------------
-" Handling files
+" #vim-iced
 "----------------------------
-" encode
-set fenc=utf-8
-set encoding=utf-8
-set fileformats=unix,dos,mac
+" enable default key mapping
+let g:iced_enable_default_key_mappings = v:true
 
-" swap & backup files
-"set nobackup
-"set noswapfile
+aug VimIcedAutoFormatOnWriting
+  au!
+  " Format whole buffer on writing files
+  au BufWritePre *.clj,*.cljs,*.cljc,*.edn execute ':IcedFormatSyncAll'
 
-" swp file directory
-set directory=~/.vim/tmp/swap
-" backup file directory
-set backupdir=~/.vim/tmp/backup
-" undo file directory
-set undodir=~/.vim/tmp/undo
-" automatically refresh file when edited externally
-set autoread
-" allow to open files even when buffers are editing
-set hidden
-" display command input in status line
-set showcmd
-
-"----------------------------
-" Preferences
-"----------------------------
-" 行番号を表示
-set number
-" 現在の行を強調表示
-set cursorline
-"" 現在の行を強調表示（縦）
-"set cursorcolumn
-" 行末の1文字先までカーソルを移動できるように
-set virtualedit=onemore
-" ビープ音を可視化
-set visualbell
-" 括弧入力時の対応する括弧を表示
-set showmatch
-" ステータスラインを常に表示
-set laststatus=2
-" コマンドラインの補完
-set wildmode=list:longest
-" 折り返し時に表示行単位での移動できるようにする
-nnoremap j gj
-nnoremap k gk
-" シンタックスハイライトの有効化
-syntax enable
-" ルーラーを表示 (noruler:非表示)
-set ruler
-" タブや改行を非表示 (list:表示)
-set nolist
-" どの文字でタブや改行を表示するかを設定
-"set listchars=tab:>-,extends:<,trail:-,eol:<
-" 長い行を折り返して表示 (nowrap:折り返さない)
-set wrap
-" 常にステータス行を表示 (詳細は:he laststatus)
-set laststatus=2
-" コマンドラインの高さ (Windows用gvim使用時はgvimrcを編集すること)
-set cmdheight=2
-" コマンドをステータス行に表示
-set showcmd
-" タイトルを表示
-set title
-
-"----------------------------
-" Tabs & indent
-"----------------------------
-" 不可視文字を可視化(タブが「@-」と表示される)
-set list listchars=tab:\@\-
-" 自動的にインデントする (noautoindent:インデントしない)
-set autoindent
-" 改行時に入力された行の末尾に合わせて次の行のインデントを増減する
-set smartindent
-" c program file
-set cindent
-" 行頭の余白内で Tab を打ち込むと、'shiftwidth' の数だけインデントする
-set smarttab
-" Tab文字を半角スペースにする
-set expandtab
-" 行頭以外のTab文字の表示幅（スペースいくつ分）
-set tabstop=2
-" 行頭でのTab文字の表示幅
-set shiftwidth=2
-" keyboard
-set softtabstop=2
-" バックスペースでインデントや改行を削除できるようにする
-set backspace=indent,eol,start
-" 検索時にファイルの最後まで行ったら最初に戻る (nowrapscan:戻らない)
-set wrapscan
-" コマンドライン補完するときに強化されたものを使う(参照 :help wildmenu)
-set wildmenu
-" テキスト挿入中の自動折り返しを日本語に対応させる
-set formatoptions+=mM
-
-filetype plugin on
-filetype indent on
-autocmd FileType php setlocal sw=4 sts=4 ts=4 et
-
-"----------------------------
-" Search
-"----------------------------
-" 検索文字列が小文字の場合は大文字小文字を区別なく検索する
-set ignorecase
-" 検索文字列に大文字が含まれている場合は区別して検索する
-set smartcase
-" 検索文字列入力時に順次対象文字列にヒットさせる
-set incsearch
-" 検索時に最後まで行ったら最初に戻る
-set wrapscan  
-" 検索語をハイライト表示
-set hlsearch
-" ESC連打でハイライト解除
-nmap <Esc><Esc> :nohlsearch<CR><Esc>
-
-"vimgrep -> 自動的にquickfix-windowを開く
-autocmd QuickFixCmdPost *grep* cwindow
-
-"----------------------------
-" Key mapping
-"----------------------------
-" asign esc key to 'jj'
-inoremap <silent> jj <ESC>
-
-" toggle paste mode
-"nnoremap <F2> :set invpaste paste?<CR>
-set pastetoggle=<F2>
-"set showmode
-
-" reload syntax highlighting
-noremap <F5> <Esc>:syntax sync fromstart<CR>
-inoremap <F5> <C-o>:syntax sync fromstart<CR>
-
-" kill function converting lowercase to prevent accidental typing
-" *not to mix it up with undo in normal mode
-vnoremap u <Nop>
-
-" kill some shortcuts to prevent accidental typing
-vnoremap ZQ <Nop>
-vnoremap ZZ <Nop>
-
-"----------------------------
-" Control panes of windows
-"----------------------------
-nnoremap s <Nop>
-nnoremap sj <C-w>j
-nnoremap sk <C-w>k
-nnoremap sl <C-w>l
-nnoremap sh <C-w>h
-nnoremap sJ <C-w>J
-nnoremap sK <C-w>K
-nnoremap sL <C-w>L
-nnoremap sH <C-w>H
-nnoremap sn gt
-nnoremap sp gT
-nnoremap sr <C-w>r
-nnoremap s= <C-w>=
-nnoremap sw <C-w>w
-nnoremap so <C-w>_<C-w>|
-nnoremap sO <C-w>=
-nnoremap sN :<C-u>bn<CR>
-nnoremap sP :<C-u>bp<CR>
-nnoremap st :<C-u>tabnew<CR>
-"nnoremap sT :<C-u>Unite tab<CR>
-nnoremap ss :<C-u>sp<CR>
-nnoremap sv :<C-u>vs<CR>
-nnoremap sq :<C-u>q<CR>
-nnoremap sQ :<C-u>bd<CR>
+  " Format only current form on writing files
+  " au BufWritePre *.clj,*.cljs,*.cljc,*.edn execute ':IcedFormatSync'
+aug END
 
 
 "----------------------------
