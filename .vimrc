@@ -217,6 +217,8 @@ vnoremap ZZ <Nop>
 " Controling panes on a window
 "----------------------------
 nnoremap s <Nop>
+nmap s <Nop>
+xmap s <Nop>
 nnoremap sj <C-w>j
 nnoremap sk <C-w>k
 nnoremap sl <C-w>l
