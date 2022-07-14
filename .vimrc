@@ -249,6 +249,7 @@ nnoremap sdk <C-w>+
 " resize width
 nnoremap sdh <C-w><
 nnoremap sdl <C-w>>
+nnoremap sdd <C-w>=
 
 
 "-----------------------------------------------------------------------
