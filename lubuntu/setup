@@ -5,6 +5,7 @@ mkdir -p ~/.vim/tmp/backup
 mkdir -p ~/.vim/tmp/undo
 #TODO .vim/coc-settings.json
 
-ln -sf ~/dotfiles/.zshenv ~/.zshenv
-ln -sf ~/dotfiles/.zshrc ~/.zshrc
+ln -sf ~/dotfiles/lubuntu/.zshenv ~/.zshenv
+ln -sf ~/dotfiles/lubuntu/.zshrc ~/.zshrc
+
 ln -sf ~/dotfiles/.tmux.conf ~/.tmux.conf
