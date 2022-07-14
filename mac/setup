@@ -3,6 +3,7 @@ ln -sf ~/dotfiles/.vimrc ~/.vimrc
 mkdir -p ~/.vim/tmp/swap
 mkdir -p ~/.vim/tmp/backup
 mkdir -p ~/.vim/tmp/undo
+ln -sf ~/dotfiles/coc-settings.json ~/.vim/
 
 ln -sf ~/dotfiles/mac/.zshenv ~/.zshenv
 ln -sf ~/dotfiles/mac/.zshrc ~/.zshrc
