@@ -60,6 +60,197 @@ call plug#end()
 
 
 "-----------------------------------------------------------------------
+" Config for plugins
+"-----------------------------------------------------------------------
+"----------------------------
+" #NERDTree
+"----------------------------
+" show hidden files
+let NERDTreeShowHidden = 1
+" hide tree by default
+let g:nerdtree_tabs_open_on_console_startup=0
+" close buffer if only nerdtree is remained
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+" toggle tree
+nnoremap <leader>ff :NERDTreeToggle<CR>
+" find the file where cursor is in tree
+nnoremap <leader>fd :NERDTreeFind<CR>
+
+"----------------------------
+" #airline
+"----------------------------
+let g:airline_powerline_fonts = 1
+set laststatus=2
+let g:airline_theme = 'luna'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#formatter = 'default'
+
+"----------------------------
+" #indent-guides
+"----------------------------
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_auto_colors = 0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#24323b   ctermbg=235
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#243b3b   ctermbg=237
+let g:indent_guides_guide_size = 1
+
+"----------------------------
+" #vim-yankstack
+"----------------------------
+call yankstack#setup()
+nmap <leader>p <Plug>yankstack_substitute_older_paste
+nmap <leader>P <Plug>yankstack_substitute_newer_paste
+
+"----------------------------
+" #ale
+"----------------------------
+let g:airline#extensions#ale#enabled = 1
+"let g:ale_statusline_format = ['E%d', 'W%d', '']
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+"enable eslint_d
+if executable('eslint_d')
+  let g:ale_javascript_eslint_executable = 'eslint_d'
+  let g:ale_javascript_eslint_use_global = 1
+endif
+let g:ale_json_jsonlint_use_global = 1
+let g:ale_json_jsonlint_executable = '/Users/tsc/.nvm/versions/node/v14.13.1/bin/jsonlint'
+
+let g:ale_linters_explicit = 1
+let g:ale_linters = {
+  \   'javascript': ['eslint'],
+  \   'javascriptreact': ['eslint'],
+  \   'typescript': ['tsserver', 'eslint'],
+  \   'typescriptreact': ['tsserver', 'eslint'],
+  \   'json': ['jsonlint'],
+  \   'clojure': ['clj-kondo', 'joker'],
+  \ }
+"config for auto formatting
+let g:ale_fixers = {
+  \   'javascript': ['prettier'],
+  \   'javascriptreact': ['prettier'],
+  \   'typescript': ['prettier'],
+  \   'typescriptreact': ['prettier'],
+  \   'css': ['prettier'],
+  \   'markdown': [
+  \     {buffer, lines -> {'command': 'textlint -c ~/.config/textlintrc -o /dev/null --fix --no-color --quiet %t', 'read_temporary_file': 1}}
+  \   ],
+  \ }
+let g:ale_fix_on_save = 1
+
+"use local config
+let g:ale_javascript_prettier_use_local_config = 1
+let g:ale_typescript_prettier_use_local_config = 1
+
+
+"----------------------------
+" #CoC
+"----------------------------
+" CoC extensions
+let g:coc_global_extensions = [
+  \ 'coc-solargraph',
+  \ 'coc-tsserver', 
+  \ 'coc-json',
+  \ 'coc-diagnostic',
+  \ ]
+
+" Add CoC Prettier if prettier is installed
+if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
+  let g:coc_global_extensions += ['coc-prettier']
+endif
+
+" Add CoC ESLint if ESLint is installed
+if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
+  let g:coc_global_extensions += ['coc-eslint']
+endif
+
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+
+"----------------------------
+" #vim-iced
+"----------------------------
+" enable default key mapping
+let g:iced_enable_default_key_mappings = v:true
+
+aug VimIcedAutoFormatOnWriting
+  au!
+  " Format whole buffer on writing files
+  au BufWritePre *.clj,*.cljs,*.cljc,*.edn execute ':IcedFormatSyncAll'
+
+  " Format only current form on writing files
+  " au BufWritePre *.clj,*.cljs,*.cljc,*.edn execute ':IcedFormatSync'
+aug END
+
+
+"----------------------------
+" OTHER SETTINGS
+"----------------------------
+" get rid of [  ] around icons in NerdTree
+"----------------------------
+if exists("g:loaded_webdevicons")
+  call webdevicons#refresh()
+endif
+
+"----------------------------
+" unable 'cursorline'
+"----------------------------
+augroup vimrc-auto-cursorline
+autocmd!
+autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
+autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
+autocmd WinEnter * call s:auto_cursorline('WinEnter')
+autocmd WinLeave * call s:auto_cursorline('WinLeave')
+
+let s:cursorline_lock = 0
+function! s:auto_cursorline(event)
+  if a:event ==# 'WinEnter'
+    setlocal cursorline
+    let s:cursorline_lock = 2
+  elseif a:event ==# 'WinLeave'
+    setlocal nocursorline
+  elseif a:event ==# 'CursorMoved'
+    if s:cursorline_lock
+      if 1 < s:cursorline_lock
+        let s:cursorline_lock = 1
+      else
+        setlocal nocursorline
+        let s:cursorline_lock = 0
+      endif
+    endif
+  elseif a:event ==# 'CursorHold'
+    setlocal cursorline
+    let s:cursorline_lock = 1
+  endif
+endfunction
+augroup END
+
+
+"-----------------------------------------------------------------------
 " Theme
 "-----------------------------------------------------------------------
 set background=dark
@@ -217,8 +408,7 @@ vnoremap ZZ <Nop>
 " Controling panes on a window
 "----------------------------
 nnoremap s <Nop>
-nmap s <Nop>
-xmap s <Nop>
+xnoremap s <Nop>
 nnoremap sj <C-w>j
 nnoremap sk <C-w>k
 nnoremap sl <C-w>l
@@ -250,193 +440,3 @@ nnoremap sdk <C-w>+
 nnoremap sdh <C-w><
 nnoremap sdl <C-w>>
 nnoremap sdd <C-w>=
-
-
-"-----------------------------------------------------------------------
-" Config for plugins
-"-----------------------------------------------------------------------
-"----------------------------
-" #NERDTree
-"----------------------------
-" show hidden files
-let NERDTreeShowHidden = 1
-" hide tree by default
-let g:nerdtree_tabs_open_on_console_startup=0
-" close buffer if only nerdtree is remained
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
-" toggle tree
-nnoremap <leader>ff :NERDTreeToggle<CR>
-" find the file where cursor is in tree
-nnoremap <leader>fd :NERDTreeFind<CR>
-
-"----------------------------
-" #airline
-"----------------------------
-let g:airline_powerline_fonts = 1
-set laststatus=2
-let g:airline_theme = 'luna'
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
-let g:airline#extensions#tabline#formatter = 'default'
-
-"----------------------------
-" #indent-guides
-"----------------------------
-let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_auto_colors = 0
-autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#24323b   ctermbg=235
-autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#243b3b   ctermbg=237
-let g:indent_guides_guide_size = 1
-
-"----------------------------
-" #vim-yankstack
-"----------------------------
-nmap <leader>p <Plug>yankstack_substitute_older_paste
-nmap <leader>P <Plug>yankstack_substitute_newer_paste
-
-"----------------------------
-" #ale
-"----------------------------
-let g:airline#extensions#ale#enabled = 1
-"let g:ale_statusline_format = ['E%d', 'W%d', '']
-nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-nmap <silent> <C-j> <Plug>(ale_next_wrap)
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-"enable eslint_d
-if executable('eslint_d')
-  let g:ale_javascript_eslint_executable = 'eslint_d'
-  let g:ale_javascript_eslint_use_global = 1
-endif
-let g:ale_json_jsonlint_use_global = 1
-let g:ale_json_jsonlint_executable = '/Users/tsc/.nvm/versions/node/v14.13.1/bin/jsonlint'
-
-let g:ale_linters_explicit = 1
-let g:ale_linters = {
-  \   'javascript': ['eslint'],
-  \   'javascriptreact': ['eslint'],
-  \   'typescript': ['tsserver', 'eslint'],
-  \   'typescriptreact': ['tsserver', 'eslint'],
-  \   'json': ['jsonlint'],
-  \   'clojure': ['clj-kondo', 'joker'],
-  \ }
-"config for auto formatting
-let g:ale_fixers = {
-  \   'javascript': ['prettier'],
-  \   'javascriptreact': ['prettier'],
-  \   'typescript': ['prettier'],
-  \   'typescriptreact': ['prettier'],
-  \   'css': ['prettier'],
-  \   'markdown': [
-  \     {buffer, lines -> {'command': 'textlint -c ~/.config/textlintrc -o /dev/null --fix --no-color --quiet %t', 'read_temporary_file': 1}}
-  \   ],
-  \ }
-let g:ale_fix_on_save = 1
-
-"use local config
-let g:ale_javascript_prettier_use_local_config = 1
-let g:ale_typescript_prettier_use_local_config = 1
-
-
-"----------------------------
-" #CoC
-"----------------------------
-" CoC extensions
-let g:coc_global_extensions = [
-  \ 'coc-solargraph',
-  \ 'coc-tsserver', 
-  \ 'coc-json',
-  \ 'coc-diagnostic',
-  \ ]
-
-" Add CoC Prettier if prettier is installed
-if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
-  let g:coc_global_extensions += ['coc-prettier']
-endif
-
-" Add CoC ESLint if ESLint is installed
-if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
-  let g:coc_global_extensions += ['coc-eslint']
-endif
-
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Remap keys for applying codeAction to the current buffer.
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
-
-" Remap <C-f> and <C-b> for scroll float windows/popups.
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
-
-
-"----------------------------
-" #vim-iced
-"----------------------------
-" enable default key mapping
-let g:iced_enable_default_key_mappings = v:true
-
-aug VimIcedAutoFormatOnWriting
-  au!
-  " Format whole buffer on writing files
-  au BufWritePre *.clj,*.cljs,*.cljc,*.edn execute ':IcedFormatSyncAll'
-
-  " Format only current form on writing files
-  " au BufWritePre *.clj,*.cljs,*.cljc,*.edn execute ':IcedFormatSync'
-aug END
-
-
-"----------------------------
-" OTHER SETTINGS
-"----------------------------
-" get rid of [  ] around icons in NerdTree
-"----------------------------
-if exists("g:loaded_webdevicons")
-  call webdevicons#refresh()
-endif
-
-"----------------------------
-" unable 'cursorline'
-"----------------------------
-augroup vimrc-auto-cursorline
-autocmd!
-autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
-autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
-autocmd WinEnter * call s:auto_cursorline('WinEnter')
-autocmd WinLeave * call s:auto_cursorline('WinLeave')
-
-let s:cursorline_lock = 0
-function! s:auto_cursorline(event)
-  if a:event ==# 'WinEnter'
-    setlocal cursorline
-    let s:cursorline_lock = 2
-  elseif a:event ==# 'WinLeave'
-    setlocal nocursorline
-  elseif a:event ==# 'CursorMoved'
-    if s:cursorline_lock
-      if 1 < s:cursorline_lock
-        let s:cursorline_lock = 1
-      else
-        setlocal nocursorline
-        let s:cursorline_lock = 0
-      endif
-    endif
-  elseif a:event ==# 'CursorHold'
-    setlocal cursorline
-    let s:cursorline_lock = 1
-  endif
-endfunction
-augroup END
