@@ -3,6 +3,14 @@ scriptencoding utf-8
 set nocompatible              " be iMproved, required
 filetype on                   " required
 
+
+" Install vim-plug, if not installed yet.
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 call plug#begin('~/.vim/plugged')
 
 " for preferences
@@ -62,6 +70,11 @@ call plug#end()
 "-----------------------------------------------------------------------
 " Config for plugins
 "-----------------------------------------------------------------------
+
+" leader
+let mapleader="\<Space>"
+nnoremap <Space> <Nop>
+
 "----------------------------
 " #NERDTree
 "----------------------------
@@ -378,9 +391,9 @@ autocmd QuickFixCmdPost *grep* cwindow
 "----------------------------
 " Key mapping
 "----------------------------
-" leader
-let mapleader="\<Space>"
-nnoremap <Space> <Nop>
+"" leader
+"let mapleader="\<Space>"
+"nnoremap <Space> <Nop>
 
 " swap colon with semicolon
 noremap ; :
