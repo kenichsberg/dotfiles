@@ -11,8 +11,11 @@ export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
 
 # java
-export JAVA_HOME=/opt/jdk-17.0.3+7
+export JAVA_HOME=/opt/jdk-17.0.1+12
 export PATH=$PATH:$JAVA_HOME/bin 
 
 # clojure
 export PATH=$PATH:~/.vim/plugged/vim-iced/bin
+
+# emacs
+export PATH=$PATH:$HOME/.emacs.d/bin
