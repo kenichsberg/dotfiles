@@ -34,9 +34,11 @@ export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
 
-# alias
+# aliases
 alias ls='ls --color=auto -laFh'
 alias lg='lazygit'
+alias mkubectl="minikube kubectl --"
+alias kubectl="minikube kubectl --"
 
 # zsh-autosuggestions
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -53,3 +55,9 @@ setopt SHARE_HISTORY
 # terraforrm
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/bin/terraform terraform
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/ken/google-cloud-sdk/path.zsh.inc' ]; then . '/home/ken/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/ken/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/ken/google-cloud-sdk/completion.zsh.inc'; fi

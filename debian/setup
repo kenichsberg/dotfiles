@@ -1,11 +1,16 @@
 #!/bin/sh
+
+# vim
 ln -sf ~/dotfiles/.vimrc ~/.vimrc
 mkdir -p ~/.vim/tmp/swap
 mkdir -p ~/.vim/tmp/backup
 mkdir -p ~/.vim/tmp/undo
 ln -sf ~/dotfiles/coc-settings.json ~/.vim/
 
-ln -sf ~/dotfiles/lubuntu/.zshenv ~/.zshenv
-ln -sf ~/dotfiles/lubuntu/.zshrc ~/.zshrc
+# zsh
+ln -sf ~/dotfiles/debian/.zshenv ~/.zshenv
+ln -sf ~/dotfiles/debian/.zshrc ~/.zshrc
 
+# tmux
 ln -sf ~/dotfiles/.tmux.conf ~/.tmux.conf
+

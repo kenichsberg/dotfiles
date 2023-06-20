@@ -19,3 +19,5 @@ export PATH=$PATH:~/.vim/plugged/vim-iced/bin
 
 # emacs
 export PATH=$PATH:$HOME/.emacs.d/bin
+export LSP_USE_PLISTS=true
+. "$HOME/.cargo/env"
