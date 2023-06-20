@@ -25,6 +25,7 @@ Plug 'preservim/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'jremmen/vim-ripgrep'
 
 " git
 Plug 'airblade/vim-gitgutter'
@@ -37,14 +38,10 @@ Plug 'tpope/vim-obsession'
 Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
 
 " CoC
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-Plug 'will133/vim-dirdiff'
-
-Plug 'othree/html5.vim'
-Plug 'hail2u/vim-css3-syntax'
 
 " js/ts
 Plug 'dense-analysis/ale'
@@ -60,9 +57,21 @@ Plug 'gabrielelana/vim-markdown', {'for': 'markdown'}
 Plug 'previm/previm'
 
 " clojure
-Plug 'guns/vim-sexp', {'for': 'clojure'}
+Plug 'clojure-vim/clojure.vim', {'for': 'clojure'}
 Plug 'liquidz/vim-iced', {'for': 'clojure'}
 Plug 'liquidz/vim-iced-coc-source', {'for': 'clojure'}
+Plug 'guns/vim-sexp', {'for': 'clojure'}
+Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': 'clojure'}
+Plug 'luochen1990/rainbow'
+Plug 'lambdalisue/fern.vim'
+Plug 'liquidz/vim-iced-fern-debugger', {'for': 'clojure'}
+
+
+" others
+Plug 'will133/vim-dirdiff'
+Plug 'othree/html5.vim', {'for': 'html'}
+Plug 'hail2u/vim-css3-syntax', {'for': 'css'}
+
 
 call plug#end()
 
@@ -73,6 +82,7 @@ call plug#end()
 
 " leader
 let mapleader="\<Space>"
+let maplocalleader="\<Space>"
 nnoremap <Space> <Nop>
 
 "----------------------------
@@ -89,6 +99,18 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 nnoremap <leader>ff :NERDTreeToggle<CR>
 " find the file where cursor is in tree
 nnoremap <leader>fd :NERDTreeFind<CR>
+
+"----------------------------
+" #CtrlP
+"----------------------------
+let g:ctrlp_map = '' 
+nnoremap <Leader><Space> :CtrlP <cr>
+
+"----------------------------
+" #ripgrep
+"----------------------------
+let g:rg_command = 'rg --vimgrep -S'
+
 
 "----------------------------
 " #airline
@@ -114,8 +136,8 @@ let g:indent_guides_guide_size = 1
 " #vim-yankstack
 "----------------------------
 call yankstack#setup()
-nmap <leader>p <Plug>yankstack_substitute_older_paste
-nmap <leader>P <Plug>yankstack_substitute_newer_paste
+nmap <C-p> <Plug>yankstack_substitute_older_paste
+nmap <C-n> <Plug>yankstack_substitute_newer_paste
 
 "----------------------------
 " #ale
@@ -142,7 +164,7 @@ let g:ale_linters = {
   \   'typescript': ['tsserver', 'eslint'],
   \   'typescriptreact': ['tsserver', 'eslint'],
   \   'json': ['jsonlint'],
-  \   'clojure': ['clj-kondo', 'joker'],
+  \   'clojure': ['clj-kondo'],
   \ }
 "config for auto formatting
 let g:ale_fixers = {
@@ -205,10 +227,17 @@ endif
 
 
 "----------------------------
+" #clojure.vim
+"----------------------------
+let g:clojure_discard_macro = 1
+
+
+"----------------------------
 " #vim-iced
 "----------------------------
 " enable default key mapping
-let g:iced_enable_default_key_mappings = v:true
+"let g:iced_enable_default_key_mappings = v:true
+let g:iced_unable_default_key_mappings = v:true
 
 aug VimIcedAutoFormatOnWriting
   au!
@@ -218,6 +247,18 @@ aug VimIcedAutoFormatOnWriting
   " Format only current form on writing files
   " au BufWritePre *.clj,*.cljs,*.cljc,*.edn execute ':IcedFormatSync'
 aug END
+
+
+"----------------------------
+" #vim-iced-fern-debugger
+"----------------------------
+let g:iced#debug#debugger = 'fern'
+
+
+"----------------------------
+" #rainbow
+"----------------------------
+let g:rainbow_active = 1
 
 
 "----------------------------
@@ -320,10 +361,10 @@ nnoremap k gk
 syntax enable
 " show rouler
 set ruler
-" タブや改行を非表示 (list:表示)
+" make tabs and line feeds invisible (list = visible)
 set nolist
-" show long rows with wrapping
-set wrap
+" show long rows without wrapping
+set nowrap
 " height of command line 
 set cmdheight=2
 " show command in status line
@@ -391,10 +432,6 @@ autocmd QuickFixCmdPost *grep* cwindow
 "----------------------------
 " Key mapping
 "----------------------------
-"" leader
-"let mapleader="\<Space>"
-"nnoremap <Space> <Nop>
-
 " swap colon with semicolon
 noremap ; :
 noremap : ;
@@ -409,17 +446,18 @@ set pastetoggle=<F2>
 noremap <F5> <Esc>:syntax sync fromstart<CR>
 inoremap <F5> <C-o>:syntax sync fromstart<CR>
 
-" kill function converting lowercase to prevent accidental typing
+" kill functionality converting lowercase to prevent accidental typing
 " *not to mix it up with undo in normal mode
 vnoremap u <Nop>
 
-" kill some shortcuts to prevent accidental typing
+" kill some binds to prevent accidental typing
 vnoremap ZQ <Nop>
 vnoremap ZZ <Nop>
 
-"----------------------------
-" Controling panes on a window
-"----------------------------
+"ripgrep
+nnoremap <leader>/ :<C-u>Rg<Space>
+
+" Windows / Panes 
 nnoremap s <Nop>
 xnoremap s <Nop>
 nnoremap sj <C-w>j
@@ -430,20 +468,21 @@ nnoremap sJ <C-w>J
 nnoremap sK <C-w>K
 nnoremap sL <C-w>L
 nnoremap sH <C-w>H
-nnoremap sn gt
-nnoremap sp gT
+nnoremap sN gt
+nnoremap sP gT
 nnoremap sr <C-w>r
 nnoremap s= <C-w>=
 nnoremap sw <C-w>w
-nnoremap so <C-w>_<C-w>|
-nnoremap sO <C-w>=
-nnoremap sN :<C-u>bn<CR>
-nnoremap sP :<C-u>bp<CR>
+"nnoremap so <C-w>_<C-w>|
+nnoremap sn :<C-u>bn<CR>
+nnoremap sp :<C-u>bp<CR>
 nnoremap st :<C-u>tabnew<CR>
 nnoremap ss :<C-u>sp<CR>
+nnoremap so :<C-u>sp<CR> <C-w>_ <C-w>j 5<C-w>+
 nnoremap sv :<C-u>vs<CR>
 nnoremap sq :<C-u>q<CR>
-nnoremap sQ :<C-u>bd<CR>
+nnoremap bd :<C-u>bd<CR>
+nnoremap bZ :<C-u>%bd\|e#<CR>
 
 " resizing panes
 " resize height
@@ -452,4 +491,155 @@ nnoremap sdk <C-w>+
 " resize width
 nnoremap sdh <C-w><
 nnoremap sdl <C-w>>
-nnoremap sdd <C-w>=
+"nnoremap sd= <C-w>=
+
+" Previous buffer
+nnoremap <Leader>` <C-^>
+
+" clojure-lsp
+nmap <silent> <Leader>cr      <Plug>(coc-rename)
+nmap <silent> gr              <Plug>(coc-references)
+xmap <silent> <Leader>c       <Plug>(coc-codeaction-selected)
+nmap <silent> <Leader>c       <Plug>(coc-codeaction-line)
+nmap <silent> gd              <Plug>(coc-definition)
+
+"" vim-iced function! s:define_mapping(map_type, default_keys, plug_name) abort if !hasmapto(a:plug_name)
+"    let keys = substitute(a:default_keys, '<Leader>', g:iced_default_key_mapping_leader, '')
+"    let cmd = printf('%s <buffer> %s %s',
+"          \ a:map_type,
+"          \ keys,
+"          \ a:plug_name,
+"          \ )
+"    call execute(cmd, 'silent!')
+"  endif
+"endfunction
+"
+"function! s:default_key_mappings() abort
+"  if exists('b:iced_default_key_mappings_applied')
+"    return
+"  endif
+"  let b:iced_default_key_mappings_applied = v:true
+"
+"  call s:define_mapping('nmap', "<Leader>'", '<Plug>(iced_connect)')
+"
+"  "" Evaluating (<Leader>e)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '<Leader>eq', '<Plug>(iced_interrupt)')
+"  call s:define_mapping('nmap', '<Leader>eQ', '<Plug>(iced_interrupt_all)')
+"  call s:define_mapping('nmap', '<Leader>"',  '<Plug>(iced_jack_in)')
+"
+"  if !hasmapto('<Plug>(iced_eval)')
+"    "call s:define_mapping('nmap', '<Leader>ei', '<Plug>(iced_eval)<Plug>(sexp_inner_element)``')
+"    "call s:define_mapping('nmap', '<Leader>ee', '<Plug>(iced_eval)<Plug>(sexp_outer_list)``')
+"    "call s:define_mapping('nmap', '<Leader>et', '<Plug>(iced_eval_outer_top_list)')
+"    call s:define_mapping('nmap', '<Leader>ew', '<Plug>(iced_eval)<Plug>(sexp_inner_element)``')
+"    call s:define_mapping('nmap', '<Leader>ee', '<Plug>(iced_eval)<Plug>(sexp_outer_list)``')
+"    call s:define_mapping('nmap', '<Leader>er', '<Plug>(iced_eval_outer_top_list)')
+"    call s:define_mapping('nmap', '<Leader>pew', '<Plug>(iced_eval)<Plug>(sexp_inner_element)``<Plug>(iced_print_last)<Plug>(iced_stdout_buffer_open)')
+"    call s:define_mapping('nmap', '<Leader>pee', '<Plug>(iced_eval)<Plug>(sexp_outer_list)``<Plug>(iced_print_last)<Plug>(iced_stdout_buffer_open)')
+"    call s:define_mapping('nmap', '<Leader>per', '<Plug>(iced_eval_outer_top_list)<Plug>(iced_print_last)<Plug>(iced_stdout_buffer_open)')
+"  endif
+"
+"  if !hasmapto('<Plug>(iced_eval_in_context)')
+"    call s:define_mapping('nmap', '<Leader>ece', '<Plug>(iced_eval_in_context)<Plug>(sexp_outer_list)``')
+"  endif
+"
+"  if !hasmapto('<Plug>(iced_eval_isolatedly)')
+"    call s:define_mapping('nmap', '<Leader>eoi', '<Plug>(iced_eval_isolatedly)<Plug>(sexp_inner_element)``' )
+"    call s:define_mapping('nmap', '<Leader>eoe', '<Plug>(iced_eval_isolatedly)<Plug>(sexp_outer_list)``' )
+"  endif
+"
+"  call s:define_mapping('nmap', '<Leader>ea', '<Plug>(iced_eval_at_mark)')
+"  call s:define_mapping('nmap', '<Leader>eca', '<Plug>(iced_eval_in_context_at_mark)')
+"  call s:define_mapping('nmap', '<Leader>el', '<Plug>(iced_eval_last_outer_top_list)')
+"  call s:define_mapping('vmap', '<Leader>ee', '<Plug>(iced_eval_visual)')
+"  call s:define_mapping('nmap', '<Leader>en', '<Plug>(iced_eval_ns)')
+"  "call s:define_mapping('nmap', '<Leader>ep', '<Plug>(iced_print_last)<Plug>(iced_stdout_buffer_open)')
+"  call s:define_mapping('nmap', '<Leader>eb', '<Plug>(iced_require)')
+"  call s:define_mapping('nmap', '<Leader>eB', '<Plug>(iced_require_all)')
+"  call s:define_mapping('nmap', '<Leader>eu', '<Plug>(iced_undef)')
+"  call s:define_mapping('nmap', '<Leader>eU', '<Plug>(iced_undef_all_in_ns)')
+"  call s:define_mapping('nmap', '<Leader>eM', '<Plug>(iced_macroexpand_outer_list)')
+"  call s:define_mapping('nmap', '<Leader>em', '<Plug>(iced_macroexpand_1_outer_list)')
+"  call s:define_mapping('nmap', '<Leader>enr', '<Plug>(iced_refresh)')
+"
+"  "" Testing (<Leader>t)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '<Leader>tt', '<Plug>(iced_test_under_cursor)')
+"  call s:define_mapping('nmap', '<Leader>tl', '<Plug>(iced_test_rerun_last)')
+"  call s:define_mapping('nmap', '<Leader>ts', '<Plug>(iced_test_spec_check)')
+"  call s:define_mapping('nmap', '<Leader>to', '<Plug>(iced_test_buffer_open)')
+"  call s:define_mapping('nmap', '<Leader>tn', '<Plug>(iced_test_ns)')
+"  call s:define_mapping('nmap', '<Leader>tp', '<Plug>(iced_test_all)')
+"  call s:define_mapping('nmap', '<Leader>tr', '<Plug>(iced_test_redo)')
+"
+"  "" Stdout buffer (<Leader>s)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '<Leader>ss', '<Plug>(iced_stdout_buffer_toggle)')
+"  call s:define_mapping('nmap', '<Leader>mc', '<Plug>(iced_stdout_buffer_clear)')
+"  call s:define_mapping('nmap', '<Leader>so', '<Plug>(iced_stdout_buffer_open)')
+"  call s:define_mapping('nmap', '<Leader>sq', '<Plug>(iced_stdout_buffer_close)')
+"
+"  "" Refactoring (<Leader>r)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '<Leader>rcn', '<Plug>(iced_clean_ns)')
+"  call s:define_mapping('nmap', '<Leader>rca', '<Plug>(iced_clean_all)')
+"  call s:define_mapping('nmap', '<Leader>ram', '<Plug>(iced_add_missing)')
+"  call s:define_mapping('nmap', '<Leader>ran', '<Plug>(iced_add_ns)')
+"  call s:define_mapping('nmap', '<Leader>rtf', '<Plug>(iced_thread_first)')
+"  call s:define_mapping('nmap', '<Leader>rtl', '<Plug>(iced_thread_last)')
+"  call s:define_mapping('nmap', '<Leader>ref', '<Plug>(iced_extract_function)')
+"  call s:define_mapping('nmap', '<Leader>raa', '<Plug>(iced_add_arity)')
+"  call s:define_mapping('nmap', '<Leader>rml', '<Plug>(iced_move_to_let)')
+"  call s:define_mapping('nmap', '<Leader>rrs', '<Plug>(iced_rename_symbol)')
+"
+"  "" Help/Document (<Leader>h)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', 'K',          '<Plug>(iced_document_popup_open)')
+"  call s:define_mapping('nmap', '<Leader>hb', '<Plug>(iced_document_open)')
+"  call s:define_mapping('nmap', '<Leader>hu', '<Plug>(iced_use_case_open)')
+"  call s:define_mapping('nmap', '<Leader>hn', '<Plug>(iced_next_use_case)')
+"  call s:define_mapping('nmap', '<Leader>hN', '<Plug>(iced_prev_use_case)')
+"  call s:define_mapping('nmap', '<Leader>hq', '<Plug>(iced_document_close)')
+"  call s:define_mapping('nmap', '<Leader>hS', '<Plug>(iced_source_show)')
+"  call s:define_mapping('nmap', '<Leader>hs', '<Plug>(iced_source_popup_show)')
+"  call s:define_mapping('nmap', '<Leader>hc', '<Plug>(iced_clojuredocs_open)')
+"  call s:define_mapping('nmap', '<Leader>hh', '<Plug>(iced_command_palette)')
+"
+"  "" Browsing (<Leader>b)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '<Leader>bn',  '<Plug>(iced_browse_related_namespace)')
+"  call s:define_mapping('nmap', '<Leader>bs',  '<Plug>(iced_browse_spec)')
+"  call s:define_mapping('nmap', '<Leader>bt',  '<Plug>(iced_browse_test_under_cursor)')
+"  call s:define_mapping('nmap', '<Leader>br',  '<Plug>(iced_browse_references)')
+"  call s:define_mapping('nmap', '<Leader>bd',  '<Plug>(iced_browse_dependencies)')
+"
+"  "" Jumping cursor (<Leader>j)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '<C-]>',      '<Plug>(iced_def_jump)')
+"  call s:define_mapping('nmap', '<Leader>jn', '<Plug>(iced_jump_to_next_sign)')
+"  call s:define_mapping('nmap', '<Leader>jN', '<Plug>(iced_jump_to_prev_sign)')
+"  call s:define_mapping('nmap', '<Leader>jl', '<Plug>(iced_jump_to_let)')
+"
+"  "" Debugging (<Leader>d)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '<Leader>dbt', '<Plug>(iced_browse_tapped)')
+"  call s:define_mapping('nmap', '<Leader>dlt', '<Plug>(iced_clear_tapped)')
+"
+"  "" Misc
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '==',         '<Plug>(iced_format)')
+"  call s:define_mapping('nmap', '=G',         '<Plug>(iced_format_all)')
+"  "call s:define_mapping('nmap', '<Leader>*',  '<Plug>(iced_grep)')
+"  "call s:define_mapping('nmap', '<Leader>/',  ':<C-u>IcedGrep<Space>')
+"  call s:define_mapping('nmap', '<Leader>yn', '<Plug>(iced_yank_ns_name)')
+"endfunction
+"
+"if exists('g:iced_unable_default_key_mappings')
+"      \ && g:iced_unable_default_key_mappings
+"  silent! call s:default_key_mappings()
+"  aug iced_default_key_mappings
+"    au!
+"    au FileType clojure call s:default_key_mappings()
+"  aug END
+"endif
