@@ -7,6 +7,13 @@ mkdir -p ~/.vim/tmp/backup
 mkdir -p ~/.vim/tmp/undo
 ln -sf ~/dotfiles/coc-settings.json ~/.vim/
 
+
+# emacs
+mkdir -p ~/.config/doom
+ln -sf ~/dotfiles/doom/config.el ~/.config/doom/config.el
+ln -sf ~/dotfiles/doom/init.el ~/.config/doom/init.el
+ln -sf ~/dotfiles/doom/packages.el ~/.config/doom/packages.el
+
 # zsh
 ln -sf ~/dotfiles/debian/.zshenv ~/.zshenv
 ln -sf ~/dotfiles/debian/.zshrc ~/.zshrc
