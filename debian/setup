@@ -7,6 +7,10 @@ mkdir -p ~/.vim/tmp/backup
 mkdir -p ~/.vim/tmp/undo
 ln -sf ~/dotfiles/coc-settings.json ~/.vim/
 
+# neovim
+mkdir -p ~/.config/nvim
+ln -sf ~/dotfiles/nivm/vim.init ~/.config/nvim/
+ln -sf ~/dotfiles/nvim/coc-settings.json ~/.config/nvim/
 
 # emacs
 mkdir -p ~/.config/doom
@@ -21,3 +25,6 @@ ln -sf ~/dotfiles/debian/.zshrc ~/.zshrc
 # tmux
 ln -sf ~/dotfiles/.tmux.conf ~/.tmux.conf
 
+#clojure
+mkdir -p ~/.config/clj-kondo
+ln -sf ~/dotfiles/clojure/clj-kondo/config.edn ~/.config/clj-kondo/config.edn

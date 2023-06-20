@@ -39,6 +39,7 @@ alias ls='ls --color=auto -laFh'
 alias lg='lazygit'
 alias mkubectl="minikube kubectl --"
 alias kubectl="minikube kubectl --"
+alias vi='nvim'
 
 # zsh-autosuggestions
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh

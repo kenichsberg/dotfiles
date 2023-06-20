@@ -1,0 +1,58 @@
+{
+  "coc.source.iced.enable": true,
+  "diagnostic-languageserver.linters": {
+    "clj_kondo_lint": {
+      "command": "clj-kondo",
+      "debounce": 100,
+      "args": [ "--lint", "%filepath"],
+      "offsetLine": 0,
+      "offsetColumn": 0,
+      "sourceName": "clj-kondo",
+      "formatLines": 1,
+      "formatPattern": [
+        "^[^:]+:(\\d+):(\\d+):\\s+([^:]+):\\s+(.*)$",
+        {
+          "line": 1,
+          "column": 2,
+          "message": 4,
+          "security": 3
+        }
+      ],
+      "securities": {
+        "error": "error",
+        "warning": "warning",
+        "note": "info"
+      } 
+
+    }
+  },
+  "diagnostic-languageserver.filetypes": {"clojure":"clj_kondo_lint"},
+
+  "coc.preferences.useQuickfixForLocations": true,
+  "suggest.snippetIndicator": "🍦",
+  "clojure-lsp.trace.server": "verbose",
+  "diagnostic.showUnused": true,
+  "diagnostic.showDeprecated": true,
+  "languageserver": {
+    "clojure-lsp": {
+      "command": "/usr/local/bin/clojure-lsp",
+      "filetypes": ["clojure"],
+      "rootPatterns": ["project.clj", "deps.edn"],
+      "additionalSchemes": ["jar", "zipfile"],
+      "trace.server": "verbose",
+      "diagnostic.showUnused": true,
+      "diagnostic.showDeprecated": true,
+      "diagnostic.highlightPriority": 1000000,
+      "//": { "initializationOptions": {
+        "ignore-classpath-directories": true
+      }},
+      "initializationOptions": {
+        "project-specs": [{
+          "project-path": "deps.edn",
+          "classpath-cmd": ["clj", "-Spath"]
+        }],
+        "use-metadata-for-privacy?": true
+      }
+    }
+  }
+}
