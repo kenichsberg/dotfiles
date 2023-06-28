@@ -1,6 +1,6 @@
 {
-  "coc.source.iced.enable": true,
-  "diagnostic-languageserver.linters": {
+  "//": {"coc.source.iced.enable": true},
+  "//": {"diagnostic-languageserver.linters": {
     "clj_kondo_lint": {
       "command": "clj-kondo",
       "debounce": 100,
@@ -26,13 +26,23 @@
 
     }
   },
-  "diagnostic-languageserver.filetypes": {"clojure":"clj_kondo_lint"},
+  "diagnostic-languageserver.filetypes": {"clojure":"clj_kondo_lint"}
+  },
 
   "coc.preferences.useQuickfixForLocations": true,
   "suggest.snippetIndicator": "🍦",
   "clojure-lsp.trace.server": "verbose",
   "diagnostic.showUnused": true,
   "diagnostic.showDeprecated": true,
+  "//" : {"diagnostic.errorSign": "🔥",
+    "diagnostic.warningSign": "・",
+    "diagnostic.infoSign": "・",
+    "diagnostic.refreshOnInsertMode": true,
+    "diagnostic.virtualTextPrefix": "│ ",
+    "diagnostic.virtualText": true,
+    "diagnostic.virtualTextCurrentLineOnly": false
+  },
+  "diagnostic.displayByAle": true,
   "languageserver": {
     "clojure-lsp": {
       "command": "/usr/local/bin/clojure-lsp",
@@ -43,9 +53,6 @@
       "diagnostic.showUnused": true,
       "diagnostic.showDeprecated": true,
       "diagnostic.highlightPriority": 1000000,
-      "//": { "initializationOptions": {
-        "ignore-classpath-directories": true
-      }},
       "initializationOptions": {
         "project-specs": [{
           "project-path": "deps.edn",

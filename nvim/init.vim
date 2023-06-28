@@ -13,10 +13,12 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
-" LSP support
+" LSP / linter
 Plug 'williamboman/mason.nvim', { 'do': ':MasonUpdate' }
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'dense-analysis/ale'
 
-" for preferences
+" preferences
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -24,7 +26,7 @@ Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'luochen1990/rainbow'
 
-" handling folders and files
+" folders and files
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
 Plug 'preservim/nerdtree'
@@ -44,11 +46,7 @@ Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
-" CoC
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
 " js/ts
-Plug 'dense-analysis/ale'
 Plug 'prettier/vim-prettier', {'for': ['javascript', 'typescript', 'javascriptreact', 'typescriptreact']}
 Plug 'pangloss/vim-javascript', {'for': ['javascript', 'javascriptreact']}
 Plug 'leafgarland/typescript-vim', {'for': ['typescript', 'typescriptreact']}
@@ -81,6 +79,13 @@ Plug 'hail2u/vim-css3-syntax', {'for': 'css'}
 
 
 call plug#end()
+
+
+"-----------------------------------------------------------------------
+" Theme
+"-----------------------------------------------------------------------
+set background=dark
+colorscheme PaperColor
 
 
 "-----------------------------------------------------------------------
@@ -183,15 +188,15 @@ let g:conjure#highlight#enabled = 1
 let g:conjure#highlight#timeout = 100
 let g:conjure#log#hud#width = 0.40
 let g:conjure#log#hud#height = 0.90
+let g:conjure#log#strip_ansi_escape_sequences_line_limit = 0
 let g:conjure#eval#comment_prefix = ";; "
 let g:conjure#client#clojure#nrepl#test#runner = "kaocha"
 let g:conjure#client#clojure#nrepl#test#call_suffix = "{:kaocha/color? true, :kaocha/reporter [kaocha.report/documentation], :kaocha/capture-output? false, :kaocha.plugin.randomize/randomize? false}"
 let g:conjure#client#clojure#nrepl#eval#raw_out = 1
-let g:conjure#log#strip_ansi_escape_sequences_line_limit = 0
 
 "custom commands
-nnoremap <localleader>tt <cmd>:ConjureEvalBuf<cr><cmd>:ConjureCljRunCurrentTest<cr>
-nnoremap <localleader>tn <cmd>:ConjureEvalBuf<cr><cmd>:ConjureCljRunCurrentNsTests<cr>
+nnoremap <Leader>tt <cmd>:ConjureEvalBuf<cr><cmd>:ConjureCljRunCurrentTest<cr>
+nnoremap <Leader>tn <cmd>:ConjureEvalBuf<cr><cmd>:ConjureCljRunCurrentNsTests<cr>
 
 
 "----------------------------
@@ -200,12 +205,16 @@ nnoremap <localleader>tn <cmd>:ConjureEvalBuf<cr><cmd>:ConjureCljRunCurrentNsTes
 let s:baleia = luaeval("require('baleia').setup { line_starts_at = 3 }")
 autocmd BufWinEnter conjure-log-* call s:baleia.automatically(bufnr('%'))
 
+"----------------------------
+" #vim-sexp
+"----------------------------
+let g:sexp_maxlines = -1
+
 
 "----------------------------
 " #ripgrep
 "----------------------------
 let g:rg_command = 'rg --vimgrep -S'
-command! -nargs=+ -complete=file -bar GrepInsideFile <cmd>:Rg <args> %<cr>
 nnoremap <expr> <leader>/ ":Rg " . input('Exact matches in this file: ') . " %<cr>"
 
 "----------------------------
@@ -231,8 +240,8 @@ let g:airline_section_c_only_filename = 1
 let g:airline_section_x = ''
 let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
 let g:airline_skip_empty_sections = 1
-let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
-let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
+"let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
+"let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
 
 "----------------------------
 " #indent-blankline
@@ -253,14 +262,31 @@ nmap <C-n> <Plug>yankstack_substitute_newer_paste
 "----------------------------
 " #ale
 "----------------------------
+let g:ale_lint_on_text_changed = 'always'
+let g:ale_lint_on_insert_leave = 0
 let g:airline#extensions#ale#enabled = 1
-"let g:ale_statusline_format = ['E%d', 'W%d', '']
-nmap <silent> <Leader>j <Plug>(ale_previous_wrap)
-nmap <silent> <Leader>k <Plug>(ale_next_wrap)
+let g:ale_statusline_format = ['E%d', 'W%d', '']
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-"enable eslint_d
+let g:ale_sign_error = '🔥'
+let g:ale_sign_warning = "・"
+let g:ale_sign_info = "・"
+let g:ale_virtualtext_prefix = '│ '
+
+autocmd VimEnter * :hi! ALEErrorSign ctermfg=209
+autocmd VimEnter * :hi! ALEWarningSign ctermfg=11
+autocmd VimEnter * :hi! ALEInfoSign   ctermfg=147
+autocmd VimEnter * hi! ALEError ctermfg=9 ctermbg=8
+autocmd VimEnter * hi! ALEWarning ctermbg=8
+autocmd VimEnter * hi! ALEInfo ctermbg=8
+hi! ALEVirtualTextError ctermfg=9 ctermbg=236
+hi! ALEVirtualTextWarning ctermfg=186 ctermbg=236
+hi! ALEVirtualTextInfo ctermfg=147 ctermbg=236
+
+" --- enable eslint_d
 if executable('eslint_d')
   let g:ale_javascript_eslint_executable = 'eslint_d'
   let g:ale_javascript_eslint_use_global = 1
@@ -317,6 +343,16 @@ if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
   let g:coc_global_extensions += ['coc-eslint']
 endif
 
+"" change diagnostic color 
+"hi! CocErrorSign ctermfg=209
+"hi! CocWarningSign ctermfg=186
+"hi! CocInfoSign ctermfg=147
+"hi! CocErrorVirtualText ctermfg=9 ctermbg=236
+"hi! CocWarningVirtualText ctermfg=186 ctermbg=236
+"hi! CocInfoVirtualText ctermfg=147 ctermbg=236
+"hi! CocErrorHighlight ctermfg=9 ctermbg=8
+"hi! CocWarningHighlight ctermbg=8
+"hi! CocInfoHighlight ctermbg=8
 
 nmap <silent><Leader>cr   <Plug>(coc-rename)
 xmap <silent><Leader>c    <Plug>(coc-codeaction-selected)
@@ -325,14 +361,33 @@ nmap <silent>gd           <Plug>(coc-definition)
 nmap <silent>gr           <Plug>(coc-references)
 nmap <silent>gi           <Plug>(coc-implementation)
 nmap <silent>gy           <Plug>(coc-type-definition)
-nmap <silent><C-k>        <Plug>(coc-diagnostic-prev)
-nmap <silent><C-j>        <Plug>(coc-diagnostic-next)
+"nmap <silent><C-k>        <Plug>(coc-diagnostic-prev)
+"nmap <silent><C-j>        <Plug>(coc-diagnostic-next)
+nmap <silent>K            <cmd>:call <SID>show_documentation()<CR>
+nmap <silent><Leader>ci   <cmd>:call CocActionAsync('showIncomingCalls')<CR>
+nmap <silent><Leader>co   <cmd>:call CocActionAsync('showOutgoingCalls')<CR>
+
+function! s:show_documentation()
+  if &filetype == 'vim'
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+"function! Expand(exp) abort
+"    let l:result = expand(a:exp)
+"    return l:result ==# '' ? '' : "file://" . l:result
+"endfunction
+
+" Highlight symbol under cursor on CursorHold      
+autocmd CursorHold * silent call CocActionAsync('highlight')
 
 "" Apply AutoFix to problem on the current line.
 "nmap <leader>qf  <Plug>(coc-fix-current)
 
 
-set updatetime=1000
+set updatetime=300
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved
@@ -460,12 +515,6 @@ function! s:auto_cursorline(event)
 endfunction
 augroup END
 
-
-"-----------------------------------------------------------------------
-" Theme
-"-----------------------------------------------------------------------
-set background=dark
-colorscheme PaperColor
 
 
 
@@ -604,16 +653,9 @@ set pastetoggle=<F2>
 noremap <F5> <Esc>:syntax sync fromstart<CR>
 inoremap <F5> <C-o>:syntax sync fromstart<CR>
 
-" kill functionality converting lowercase to prevent accidental typing
-" *not to mix it up with undo in normal mode
-vnoremap u <Nop>
-
 " kill some binds to prevent accidental typing
 vnoremap ZQ <Nop>
 vnoremap ZZ <Nop>
-
-"ripgrep
-"nnoremap <leader>/ :<C-u>Rg<Space>
 
 " Windows / Panes 
 nnoremap s <Nop>
@@ -631,16 +673,15 @@ nnoremap sP gT
 nnoremap sr <C-w>r
 nnoremap s= <C-w>=
 nnoremap sw <C-w>w
-"nnoremap so <C-w>_<C-w>|
 nnoremap sn :<C-u>bn<CR>
 nnoremap sp :<C-u>bp<CR>
 nnoremap st :<C-u>tabnew<CR>
 nnoremap ss :<C-u>sp<CR>
-nnoremap so :<C-u>sp<CR> <C-w>_ <C-w>j 5<C-w>+
+"nnoremap so :<C-u>sp<CR> <C-w>_ <C-w>j 5<C-w>+
 nnoremap sv :<C-u>vs<CR>
 nnoremap sq :<C-u>q<CR>
 nnoremap bd :<C-u>bd<CR>
-nnoremap bZ :<C-u>%bd\|e#<CR>
+nnoremap bZ :<C-u>%bd\|e#\|bd#<CR>\|'"
 
 " resizing panes
 " resize height
