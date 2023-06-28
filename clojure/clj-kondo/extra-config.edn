@@ -1,5 +1,4 @@
 {:linters {:unsorted-required-namespaces {:level :off}
            :aliased-namespace-symbol {:level :off}
            :single-key-in {:level :off}}
- :skip-comments true
- :output {:exclude-files ["conjure.log..*.cljc"]}}
+ :skip-comments true}

@@ -18,6 +18,7 @@ export PATH=$PATH:$JAVA_HOME/bin
 
 # clojure
 export PATH=$PATH:~/.vim/plugged/vim-iced/bin
+export CLJ_KONDO_EXTRA_CONFIG_DIR="$HOME/.config/clj-kondo/extra-config.edn"
 
 # emacs
 export PATH=$PATH:$HOME/.emacs.d/bin
