@@ -45,6 +45,7 @@
   "diagnostic.displayByAle": true,
   "languageserver": {
     "clojure-lsp": {
+      "//": {"command": "/home/ken/projects/oss/clojure-lsp/clojure-lsp"},
       "command": "/usr/local/bin/clojure-lsp",
       "filetypes": ["clojure"],
       "rootPatterns": ["project.clj", "deps.edn"],
@@ -59,6 +60,23 @@
           "classpath-cmd": ["clj", "-Spath"]
         }],
         "use-metadata-for-privacy?": true
+      }
+    },
+    "haskell": {
+      "command": "haskell-language-server-wrapper",
+      "args": ["--lsp"],
+      "rootPatterns": [ "*.cabal", "stack.yaml", "cabal.project", "package.yaml", "hie.yaml" ],
+      "filetypes": ["haskell", "lhaskell"],
+      "settings": {
+        "haskell": {
+          "checkParents": "CheckOnSave",
+          "checkProject": true,
+          "maxCompletions": 40,
+          "formattingProvider": "ormolu",
+          "plugin": {
+            "stan": { "globalOn": true }
+          }
+        }
       }
     }
   }

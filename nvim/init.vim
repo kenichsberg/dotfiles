@@ -17,6 +17,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'williamboman/mason.nvim', { 'do': ':MasonUpdate' }
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'dense-analysis/ale'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " preferences
 Plug 'NLKNguyen/papercolor-theme'
@@ -25,13 +26,18 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'luochen1990/rainbow'
+Plug 'pappasam/papercolor-theme-slim'
 
 " folders and files
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
-Plug 'preservim/nerdtree'
-Plug 'jistr/vim-nerdtree-tabs'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'jremmen/vim-ripgrep'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.6' }
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+Plug 'nvim-tree/nvim-tree.lua'
+Plug 'nvim-tree/nvim-web-devicons'
+"Plug 'preservim/nerdtree'
+"Plug 'jistr/vim-nerdtree-tabs'
 
 " git
 Plug 'airblade/vim-gitgutter'
@@ -59,20 +65,25 @@ Plug 'gabrielelana/vim-markdown', {'for': 'markdown'}
 Plug 'previm/previm'
 
 " clojure
-Plug 'clojure-vim/clojure.vim', {'for': 'clojure'}
+"Plug 'clojure-vim/clojure.vim', {'for': 'clojure'}
 Plug 'guns/vim-sexp', {'for': 'clojure'}
 Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': 'clojure'}
-" Plug 'liquidz/vim-iced', {'for': 'clojure'}
-" Plug 'liquidz/vim-iced-coc-source', {'for': 'clojure'}
-" Plug 'lambdalisue/fern.vim'
-" Plug 'liquidz/vim-iced-fern-debugger', {'for': 'clojure'}
-Plug 'Olical/conjure'
-Plug 'm00qek/baleia.nvim', {'tag': 'v1.3.0'}
+"Plug 'liquidz/vim-iced', {'for': 'clojure'}
+"Plug 'liquidz/vim-iced-coc-source', {'for': 'clojure'}
+"Plug 'lambdalisue/fern.vim'
+"Plug 'liquidz/vim-iced-fern-debugger', {'for': 'clojure'}
+Plug 'Olical/conjure', {'for': 'clojure'}
+"Plug 'm00qek/baleia.nvim', {'tag': 'v1.3.0'}
 
 " fennel
 Plug 'atweiden/vim-fennel'
 
+" haskell
+Plug 'ndmitchell/ghcid', {'rtp': 'plugins/nvim', 'for': 'haskell' }
+
 " others
+Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
+Plug 'kevinhwang91/nvim-bqf'
 Plug 'will133/vim-dirdiff'
 Plug 'othree/html5.vim', {'for': 'html'}
 Plug 'hail2u/vim-css3-syntax', {'for': 'css'}
@@ -84,18 +95,82 @@ call plug#end()
 "-----------------------------------------------------------------------
 " Theme
 "-----------------------------------------------------------------------
-set background=dark
-colorscheme PaperColor
+"----------------------------
+" #indent-blankline
+"----------------------------
+"require("indent_blankline").setup {
+"    show_end_of_line = true,
+"}
+lua <<EOF
+require("ibl").setup{
+  scope = {
+    enabled = true,
+    show_end = true
+  }
+}
+EOF
+
+if exists("g:neovide")
+  set termguicolors
+  set background=dark
+  colorscheme PaperColorSlim
+  let g:neovide_cursor_trail_size = 0.3
+  let g:neovide_cursor_vfx_mode = "pixiedust"
+  vnoremap <C-S-c> "+y
+  nnoremap <C-S-v> "+P
+  vnoremap <C-S-v> "+P
+  cnoremap <C-S-v> <C-R>+
+  inoremap <C-S-v> <C-R>+
+else
+  set background=dark
+  colorscheme PaperColor
+endif
+set t_Co=256
+" The following doesn't work
 
 
 "-----------------------------------------------------------------------
 " Config for plugins
 "-----------------------------------------------------------------------
-
-" leader
+" set leader
 let mapleader="\<Space>"
 let maplocalleader="\<Space>"
 nnoremap <Space> <Nop>
+
+"----------------------------
+" #conjure
+"----------------------------
+let g:conjure#mapping#def_word=v:false
+let g:conjure#mapping#doc_word=v:false
+let g:conjure#mapping#log_buf=["<Leader>ll"]
+let g:conjure#mapping#log_toggle=["<Leader>lt"]
+let g:conjure#mapping#log_jump_to_latest=["<Leader>lj"]
+let g:conjure#client#clojure#nrepl#mapping#connect_port_file=["<Leader>mc"]
+let g:conjure#client#clojure#nrepl#mapping#disconnect=["<Leader>cq"]
+let g:conjure#client#clojure#nrepl#mapping#run_current_ns_tests=["<Leader>tb"]
+let g:conjure#client#clojure#nrepl#mapping#session_clone=["<Leader>bc"]
+let g:conjure#client#clojure#nrepl#mapping#session_fresh=["<Leader>bf"]
+let g:conjure#client#clojure#nrepl#mapping#session_close=["<Leader>bq"]
+let g:conjure#client#clojure#nrepl#mapping#session_close_all=["<Leader>bQ"]
+let g:conjure#client#clojure#nrepl#mapping#session_list=["<Leader>bl"]
+let g:conjure#client#clojure#nrepl#mapping#session_next=["<Leader>bn"]
+let g:conjure#client#clojure#nrepl#mapping#session_prev=["<Leader>bp"]
+let g:conjure#client#clojure#nrepl#mapping#session_select=["<Leader>bs"]
+
+let g:conjure#highlight#enabled=1
+let g:conjure#highlight#timeout=100
+let g:conjure#log#hud#width=0.40
+let g:conjure#log#hud#height=0.90
+let g:conjure#log#strip_ansi_escape_sequences_line_limit=0
+let g:conjure#eval#comment_prefix=";; "
+"let g:conjure#client#clojure#nrepl#test#runner="kaocha"
+"let g:conjure#client#clojure#nrepl#test#call_suffix="{:kaocha/color? true, :kaocha/reporter [kaocha.report/documentation], :kaocha/capture-output? false, :kaocha.plugin.randomize/randomize? false}"
+let g:conjure#client#clojure#nrepl#eval#raw_out=1
+
+"custom commands
+nnoremap <Leader>tt <cmd>:ConjureEvalBuf<cr><cmd>:ConjureCljRunCurrentTest<cr>
+nnoremap <Leader>tn <cmd>:ConjureEvalBuf<cr><cmd>:ConjureCljRunCurrentNsTests<cr>
+
 
 "----------------------------
 " #Mason
@@ -104,20 +179,146 @@ nnoremap <Space> <Nop>
 "require('mason').setup()
 "EOF
 
-"----------------------------
-" #NERDTree
-"----------------------------
-" show hidden files
-let NERDTreeShowHidden = 1
-" hide tree by default
-let g:nerdtree_tabs_open_on_console_startup=0
-" close buffer if only nerdtree is remained
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+""----------------------------
+"" #NERDTree
+""----------------------------
+"" show hidden files
+"let NERDTreeShowHidden = 1
+"" hide tree by default
+"let g:nerdtree_tabs_open_on_console_startup=0
+"" close buffer if only nerdtree is remained
+"autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+"
+"" toggle tree
+"nnoremap <leader>ff :NERDTreeToggle<CR>
+"" find the file where cursor is in tree
+"nnoremap <leader>fd :NERDTreeFind<CR>
 
-" toggle tree
-nnoremap <leader>ff :NERDTreeToggle<CR>
-" find the file where cursor is in tree
-nnoremap <leader>fd :NERDTreeFind<CR>
+
+"----------------------------
+" #nvim-tree
+"----------------------------
+lua <<EOF
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+vim.opt.termguicolors = true
+--require("nvim-tree").setup()
+
+local function my_on_attach(bufnr)
+  local api = require "nvim-tree.api"
+
+  local function opts(desc)
+    return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+  end
+
+  api.config.mappings.default_on_attach(bufnr)
+
+  --vim.keymap.set('n', '<C-]>',   api.tree.change_root_to_node,        opts('CD'))
+  --vim.keymap.set('n', '<C-e>',   api.node.open.replace_tree_buffer,   opts('Open: In Place'))
+  --vim.keymap.set('n', '<C-k>',   api.node.show_info_popup,            opts('Info'))
+  vim.keymap.set('n', 'mr',      api.fs.rename_sub,                   opts('Rename: Omit Filename'))
+  vim.keymap.set('n', 't',       api.node.open.tab,                   opts('Open: New Tab'))
+  vim.keymap.set('n', 'v',       api.node.open.vertical,              opts('Open: Vertical Split'))
+  vim.keymap.set('n', 'sp',      api.node.open.horizontal,            opts('Open: Horizontal Split'))
+  vim.keymap.set('n', '<BS>',    api.node.navigate.parent_close,      opts('Close Directory'))
+  vim.keymap.set('n', '<CR>',    api.node.open.edit,                  opts('Open'))
+  vim.keymap.set('n', '<Tab>',   api.node.open.preview,               opts('Open Preview'))
+  vim.keymap.set('n', 'J',       api.node.navigate.sibling.next,      opts('Next Sibling'))
+  vim.keymap.set('n', 'K',       api.node.navigate.sibling.prev,      opts('Previous Sibling'))
+  vim.keymap.set('n', '.',       api.node.run.cmd,                    opts('Run Command'))
+  vim.keymap.set('n', '-',       api.tree.change_root_to_parent,      opts('Up'))
+  vim.keymap.set('n', 'a',       api.fs.create,                       opts('Create File Or Directory'))
+  vim.keymap.set('n', 'bd',      api.marks.bulk.delete,               opts('Delete Bookmarked'))
+  vim.keymap.set('n', 'bt',      api.marks.bulk.trash,                opts('Trash Bookmarked'))
+  vim.keymap.set('n', 'bmv',     api.marks.bulk.move,                 opts('Move Bookmarked'))
+  vim.keymap.set('n', 'B',       api.tree.toggle_no_buffer_filter,    opts('Toggle Filter: No Buffer'))
+  vim.keymap.set('n', 'c',       api.fs.copy.node,                    opts('Copy'))
+  vim.keymap.set('n', 'C',       api.tree.toggle_git_clean_filter,    opts('Toggle Filter: Git Clean'))
+  vim.keymap.set('n', '[c',      api.node.navigate.git.prev,          opts('Prev Git'))
+  vim.keymap.set('n', ']c',      api.node.navigate.git.next,          opts('Next Git'))
+  vim.keymap.set('n', 'd',       api.fs.remove,                       opts('Delete'))
+  vim.keymap.set('n', 'D',       api.fs.trash,                        opts('Trash'))
+  vim.keymap.set('n', 'E',       api.tree.expand_all,                 opts('Expand All'))
+  vim.keymap.set('n', 'e',       api.fs.rename_basename,              opts('Rename: Basename'))
+  vim.keymap.set('n', ']e',      api.node.navigate.diagnostics.next,  opts('Next Diagnostic'))
+  vim.keymap.set('n', '[e',      api.node.navigate.diagnostics.prev,  opts('Prev Diagnostic'))
+  vim.keymap.set('n', 'F',       api.live_filter.clear,               opts('Live Filter: Clear'))
+  vim.keymap.set('n', 'f',       api.live_filter.start,               opts('Live Filter: Start'))
+  vim.keymap.set('n', 'g?',      api.tree.toggle_help,                opts('Help'))
+  vim.keymap.set('n', 'gy',      api.fs.copy.absolute_path,           opts('Copy Absolute Path'))
+  vim.keymap.set('n', 'ge',      api.fs.copy.basename,                opts('Copy Basename'))
+  vim.keymap.set('n', 'H',       'H',                                  opts(''))
+  vim.keymap.set('n', 'I',       api.tree.toggle_gitignore_filter,    opts('Toggle Filter: Git Ignore'))
+  --vim.keymap.set('n', 'J',       api.node.navigate.sibling.last,      opts('Last Sibling'))
+  --vim.keymap.set('n', 'K',       api.node.navigate.sibling.first,     opts('First Sibling'))
+  vim.keymap.set('n', 'L',       'L',                                  opts(''))
+  vim.keymap.set('n', 'M',       api.tree.toggle_no_bookmark_filter,  opts('Toggle Filter: No Bookmark'))
+  vim.keymap.set('n', 'm',       api.marks.toggle,                    opts('Toggle Bookmark'))
+  vim.keymap.set('n', 'o',       api.node.open.edit,                  opts('Open'))
+  vim.keymap.set('n', 'O',       api.node.open.no_window_picker,      opts('Open: No Window Picker'))
+  vim.keymap.set('n', 'p',       api.fs.paste,                        opts('Paste'))
+  vim.keymap.set('n', 'P',       api.node.navigate.parent,            opts('Parent Directory'))
+  vim.keymap.set('n', 'q',       api.tree.close,                      opts('Close'))
+  vim.keymap.set('n', 'r',       api.fs.rename,                       opts('Rename'))
+  vim.keymap.set('n', 'R',       api.tree.reload,                     opts('Refresh'))
+  vim.keymap.set('n', 's',       '',                                  opts(''))
+  vim.keymap.set('n', 'S',       api.tree.search_node,                opts('Search'))
+  vim.keymap.set('n', 'u',       api.fs.rename_full,                  opts('Rename: Full Path'))
+  vim.keymap.set('n', 'U',       api.tree.toggle_custom_filter,       opts('Toggle Filter: Hidden'))
+  vim.keymap.set('n', 'W',       api.tree.collapse_all,               opts('Collapse'))
+  vim.keymap.set('n', 'x',       api.fs.cut,                          opts('Cut'))
+  vim.keymap.set('n', 'y',       api.fs.copy.filename,                opts('Copy Name'))
+  vim.keymap.set('n', 'Y',       api.fs.copy.relative_path,           opts('Copy Relative Path'))
+  --vim.keymap.set('n', '<2-LeftMouse>',  api.node.open.edit,           opts('Open'))
+  --vim.keymap.set('n', '<2-RightMouse>', api.tree.change_root_to_node, opts('CD'))
+end
+
+require("nvim-tree").setup {
+  on_attach = my_on_attach,
+}
+EOF
+
+nnoremap <silent> <Leader>ff :NvimTreeFindFile<CR>:NvimTreeFocus<CR>
+nnoremap <silent> <Leader>fd :NvimTreeClose<CR>
+
+
+"----------------------------
+" #toggleterm
+"----------------------------
+lua <<EOF
+require("toggleterm").setup()
+local Terminal  = require('toggleterm.terminal').Terminal
+local lazygit = Terminal:new({
+  cmd = "lazygit",
+  dir = "git_dir",
+  direction = "float",
+  float_opts = {
+    border = "double",
+    width = function()
+      return math.floor(vim.o.columns * 0.95)
+    end,
+    height = function()
+      return math.floor(vim.o.lines * 0.9)
+    end,
+  },
+  -- function to run on opening the terminal
+  on_open = function(term)
+    vim.cmd("startinsert!")
+    vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", {noremap = true, silent = true})
+  end,
+  -- function to run on closing the terminal
+  on_close = function(term)
+    vim.cmd("startinsert!")
+  end,
+})
+
+function _lazygit_toggle()
+  lazygit:toggle()
+end
+
+vim.api.nvim_set_keymap("n", "<leader>lg", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})
+EOF
+
 
 "----------------------------
 " #telescope
@@ -138,6 +339,15 @@ nnoremap <leader>fh      <cmd>lua require('telescope.builtin').help_tags()<cr>
 lua <<EOF
 local actions = require("telescope.actions")
 require("telescope").setup{
+  extensions = {
+    fzf = {
+      fuzzy = true,                    -- false will only do exact matching
+      override_generic_sorter = true,  -- override the generic sorter
+      override_file_sorter = true,     -- override the file sorter
+      case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+      -- the default case_mode is "smart_case"
+    }
+  },
   defaults = {
     vimgrep_arguments = {
       'rg',
@@ -162,54 +372,54 @@ require("telescope").setup{
     },
   }
 }
+require('telescope').load_extension('fzf')
 EOF
-hi TelescopeMatching cterm=NONE ctermfg=magenta
+"hi TelescopeMatching cterm=NONE ctermfg=magenta
+
 
 "----------------------------
-" #conjure
+" #tree-sitter
 "----------------------------
-let g:conjure#mapping#def_word = v:false
-let g:conjure#mapping#doc_word = v:false
-let g:conjure#mapping#log_buf = ["<Leader>ll"]
-let g:conjure#mapping#log_jump_to_latest = ["<Leader>lj"]
-let g:conjure#client#clojure#nrepl#mapping#connect_port_file = ["<Leader>mc"]
-let g:conjure#client#clojure#nrepl#mapping#disconnect = ["<Leader>cq"]
-let g:conjure#client#clojure#nrepl#mapping#run_current_ns_tests = ["<Leader>tb"]
-let g:conjure#client#clojure#nrepl#mapping#session_clone = ["<Leader>bc"]
-let g:conjure#client#clojure#nrepl#mapping#session_fresh = ["<Leader>bf"]
-let g:conjure#client#clojure#nrepl#mapping#session_close = ["<Leader>bq"]
-let g:conjure#client#clojure#nrepl#mapping#session_close_all = ["<Leader>bQ"]
-let g:conjure#client#clojure#nrepl#mapping#session_list = ["<Leader>bl"]
-let g:conjure#client#clojure#nrepl#mapping#session_next = ["<Leader>bn"]
-let g:conjure#client#clojure#nrepl#mapping#session_prev = ["<Leader>bp"]
-let g:conjure#client#clojure#nrepl#mapping#session_select = ["<Leader>bs"]
-
-let g:conjure#highlight#enabled = 1
-let g:conjure#highlight#timeout = 100
-let g:conjure#log#hud#width = 0.40
-let g:conjure#log#hud#height = 0.90
-let g:conjure#log#strip_ansi_escape_sequences_line_limit = 0
-let g:conjure#eval#comment_prefix = ";; "
-let g:conjure#client#clojure#nrepl#test#runner = "kaocha"
-let g:conjure#client#clojure#nrepl#test#call_suffix = "{:kaocha/color? true, :kaocha/reporter [kaocha.report/documentation], :kaocha/capture-output? false, :kaocha.plugin.randomize/randomize? false}"
-let g:conjure#client#clojure#nrepl#eval#raw_out = 1
-
-"custom commands
-nnoremap <Leader>tt <cmd>:ConjureEvalBuf<cr><cmd>:ConjureCljRunCurrentTest<cr>
-nnoremap <Leader>tn <cmd>:ConjureEvalBuf<cr><cmd>:ConjureCljRunCurrentNsTests<cr>
+lua <<EOF
+require('nvim-treesitter.configs').setup {
+  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "clojure", "fennel", "rust", "haskell", "typescript", },
+  sync_install = true,
+  highlight = {enable = true},
+  indent = {enable = true},
+}
+EOF
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+set foldlevel=2
 
 
 "----------------------------
 " #baleia
 "----------------------------
-let s:baleia = luaeval("require('baleia').setup { line_starts_at = 3 }")
-autocmd BufWinEnter conjure-log-* call s:baleia.automatically(bufnr('%'))
+"let s:baleia = luaeval("require('baleia').setup { line_starts_at = 3 }")
+"autocmd BufWinEnter conjure-log-* call s:baleia.automatically(bufnr('%'))
 
 "----------------------------
 " #vim-sexp
 "----------------------------
 let g:sexp_maxlines = -1
 
+"----------------------------
+" #fugitive
+"----------------------------
+nnoremap <leader>gt :0Gclog<cr>
+nnoremap <leader>gT :G log -30<cr>
+vnoremap <leader>gt :Gclog<cr>
+vnoremap <leader>gt :Gclog<cr>
+vnoremap <leader>grl :G reflog -30<cr>
+nnoremap <leader>gB :G blame<cr>
+nnoremap <leader>gs :G status<cr>
+nnoremap <leader>gf :Gdiff<cr>
+nnoremap <leader>gpr :G pull --rebase<cr>
+nnoremap <leader>gpra :G pull --rebase --autostash<cr>
+nnoremap <leader>gpa :G pull --autostash<cr>
+nnoremap <leader>gpp :G pull<cr>
+nnoremap <leader>gP :G push<cr>
 
 "----------------------------
 " #ripgrep
@@ -243,14 +453,6 @@ let g:airline_skip_empty_sections = 1
 "let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
 "let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
 
-"----------------------------
-" #indent-blankline
-"----------------------------
-lua <<EOF
-require("indent_blankline").setup {
-    show_end_of_line = true,
-}
-EOF
 
 "----------------------------
 " #vim-yankstack
@@ -276,15 +478,21 @@ let g:ale_sign_warning = "・"
 let g:ale_sign_info = "・"
 let g:ale_virtualtext_prefix = '│ '
 
-autocmd VimEnter * :hi! ALEErrorSign ctermfg=209
-autocmd VimEnter * :hi! ALEWarningSign ctermfg=11
-autocmd VimEnter * :hi! ALEInfoSign   ctermfg=147
-autocmd VimEnter * hi! ALEError ctermfg=9 ctermbg=8
-autocmd VimEnter * hi! ALEWarning ctermbg=8
-autocmd VimEnter * hi! ALEInfo ctermbg=8
+"autocmd VimEnter * :hi! ALEErrorSign ctermfg=209
+"autocmd VimEnter * :hi! ALEWarningSign ctermfg=11
+"autocmd VimEnter * :hi! ALEInfoSign   ctermfg=147
+"autocmd VimEnter * hi! ALEError ctermfg=9 ctermbg=8
+"autocmd VimEnter * hi! ALEWarning ctermbg=8
+"autocmd VimEnter * hi! ALEInfo ctermbg=8
 hi! ALEVirtualTextError ctermfg=9 ctermbg=236
 hi! ALEVirtualTextWarning ctermfg=186 ctermbg=236
 hi! ALEVirtualTextInfo ctermfg=147 ctermbg=236
+
+hi link ALEError Error
+hi Warning term=underline cterm=underline ctermfg=Yellow gui=undercurl guisp=Gold
+hi link ALEWarning Warning
+hi link ALEInfo SpellCap
+
 
 " --- enable eslint_d
 if executable('eslint_d')
@@ -367,6 +575,8 @@ nmap <silent>K            <cmd>:call <SID>show_documentation()<CR>
 nmap <silent><Leader>ci   <cmd>:call CocActionAsync('showIncomingCalls')<CR>
 nmap <silent><Leader>co   <cmd>:call CocActionAsync('showOutgoingCalls')<CR>
 
+autocmd FileType cljc let b:coc_suggest_disable = 1
+
 function! s:show_documentation()
   if &filetype == 'vim'
     execute 'h '.expand('<cword>')
@@ -423,15 +633,37 @@ endif
 "----------------------------
 " #clojure.vim
 "----------------------------
-let g:clojure_discard_macro = 1
+"let g:clojure_discard_macro = 1
 
 
-"----------------------------
-" #vim-iced
-"----------------------------
-" enable default key mapping
-"let g:iced_enable_default_key_mappings = v:true
+""----------------------------
+"" #vim-iced
+""----------------------------
+"let g:spr = v:true
+"
+"" enable default key mapping
+""let g:iced_enable_default_key_mappings = v:true
 "let g:iced_unable_default_key_mappings = v:true
+"
+"let g:iced#buffer#stdout#mods = 'vertical'
+"let g:iced#buffer#stdout#enable_notify = v:true
+"let g:iced#buffer#stdout#enable_delimiter = v:true
+"let g:iced#notify#max_height_rate = 0.9
+"let g:iced#notify#max_width_rate = 0.4
+"
+""disable syntax checking on stdout buffer
+"call iced#hook#add('connected', {
+"      \ 'type': 'function',
+"      \ 'exec': {_ -> lsp#disable_diagnostics_for_buffer(bufnr('iced_stdout'))},
+"      \ })
+"call iced#hook#add('connected', {
+"      \ 'type': 'function',
+"      \ 'exec': {_ -> ale#toggle#DisableBuffer(bufnr('iced_stdout'))},
+"      \ })
+"call iced#hook#add('connected', {
+"      \ 'type': 'function',
+"      \ 'exec': {_ -> CocAction('diagnosticToggleBuffer', bufnr('iced_stdout'))},
+"      \ })
 "
 "aug VimIcedAutoFormatOnWriting
 "  au!
@@ -441,28 +673,176 @@ let g:clojure_discard_macro = 1
 "  " Format only current form on writing files
 "  " au BufWritePre *.clj,*.cljs,*.cljc,*.edn execute ':IcedFormatSync'
 "aug END
-
-
-"----------------------------
-" #vim-iced-fern-debugger
-"----------------------------
+"
+"function! s:define_mapping(map_type, default_keys, plug_name) abort
+"  if !hasmapto(a:plug_name)
+"    let keys = substitute(a:default_keys, '<Leader>', g:iced_default_key_mapping_leader, '')
+"    let cmd = printf('%s <buffer> %s %s',
+"          \ a:map_type,
+"          \ keys,
+"          \ a:plug_name,
+"          \ )
+"    call execute(cmd, 'silent!')
+"  endif
+"endfunction
+"
+"function! s:default_key_mappings() abort
+"  if exists('b:iced_default_key_mappings_applied')
+"    return
+"  endif
+"  let b:iced_default_key_mappings_applied = v:true
+"
+"  call s:define_mapping('nmap', "<Leader>mc", '<Plug>(iced_connect)')
+"
+"  "" Evaluating (<Leader>e)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '<Leader>eq', '<Plug>(iced_interrupt)')
+"  call s:define_mapping('nmap', '<Leader>eQ', '<Plug>(iced_interrupt_all)')
+"  call s:define_mapping('nmap', '<Leader>"',  '<Plug>(iced_jack_in)')
+"
+"  if !hasmapto('<Plug>(iced_eval)')
+"    "call s:define_mapping('nmap', '<Leader>ei', '<Plug>(iced_eval)<Plug>(sexp_inner_element)``')
+"    "call s:define_mapping('nmap', '<Leader>ee', '<Plug>(iced_eval)<Plug>(sexp_outer_list)``')
+"    "call s:define_mapping('nmap', '<Leader>et', '<Plug>(iced_eval_outer_top_list)')
+"    call s:define_mapping('nmap', '<Leader>ew', '<Plug>(iced_eval)<Plug>(sexp_inner_element)``')
+"    call s:define_mapping('nmap', '<Leader>ee', '<Plug>(iced_eval)<Plug>(sexp_outer_list)``')
+"    call s:define_mapping('nmap', '<Leader>er', '<Plug>(iced_eval_outer_top_list)')
+"    call s:define_mapping('nmap', '<Leader>pew', '<Plug>(iced_eval)<Plug>(sexp_inner_element)``<Plug>(iced_print_last)<Plug>(iced_stdout_buffer_open)')
+"    call s:define_mapping('nmap', '<Leader>pee', '<Plug>(iced_eval)<Plug>(sexp_outer_list)``<Plug>(iced_print_last)<Plug>(iced_stdout_buffer_open)')
+"    call s:define_mapping('nmap', '<Leader>per', '<Plug>(iced_eval_outer_top_list)<Plug>(iced_print_last)<Plug>(iced_stdout_buffer_open)')
+"  endif
+"
+"  if !hasmapto('<Plug>(iced_eval_in_context)')
+"    call s:define_mapping('nmap', '<Leader>ece', '<Plug>(iced_eval_in_context)<Plug>(sexp_outer_list)``')
+"  endif
+"
+"  if !hasmapto('<Plug>(iced_eval_isolatedly)')
+"    call s:define_mapping('nmap', '<Leader>eoi', '<Plug>(iced_eval_isolatedly)<Plug>(sexp_inner_element)``' )
+"    call s:define_mapping('nmap', '<Leader>eoe', '<Plug>(iced_eval_isolatedly)<Plug>(sexp_outer_list)``' )
+"  endif
+"
+"  call s:define_mapping('nmap', '<Leader>ea', '<Plug>(iced_eval_at_mark)')
+"  call s:define_mapping('nmap', '<Leader>eca', '<Plug>(iced_eval_in_context_at_mark)')
+"  call s:define_mapping('nmap', '<Leader>el', '<Plug>(iced_eval_last_outer_top_list)')
+"  call s:define_mapping('vmap', '<Leader>ee', '<Plug>(iced_eval_visual)')
+"  call s:define_mapping('nmap', '<Leader>en', '<Plug>(iced_eval_ns)')
+"  "call s:define_mapping('nmap', '<Leader>ep', '<Plug>(iced_print_last)<Plug>(iced_stdout_buffer_open)')
+"  call s:define_mapping('nmap', '<Leader>eb', '<Plug>(iced_require)')
+"  "call s:define_mapping('nmap', '<Leader>eB', '<Plug>(iced_require_all)')
+"  call s:define_mapping('nmap', '<Leader>eu', '<Plug>(iced_undef)')
+"  call s:define_mapping('nmap', '<Leader>eU', '<Plug>(iced_undef_all_in_ns)')
+"  call s:define_mapping('nmap', '<Leader>eM', '<Plug>(iced_macroexpand_outer_list)')
+"  call s:define_mapping('nmap', '<Leader>em', '<Plug>(iced_macroexpand_1_outer_list)')
+"  call s:define_mapping('nmap', '<Leader>enr', '<Plug>(iced_refresh)')
+"
+"  "" Testing (<Leader>t)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '<Leader>tt', '<Plug>(iced_test_under_cursor)')
+"  call s:define_mapping('nmap', '<Leader>tl', '<Plug>(iced_test_rerun_last)')
+"  call s:define_mapping('nmap', '<Leader>ts', '<Plug>(iced_test_spec_check)')
+"  call s:define_mapping('nmap', '<Leader>to', '<Plug>(iced_test_buffer_open)')
+"  call s:define_mapping('nmap', '<Leader>tn', '<Plug>(iced_test_ns)')
+"  call s:define_mapping('nmap', '<Leader>tp', '<Plug>(iced_test_all)')
+"  call s:define_mapping('nmap', '<Leader>tr', '<Plug>(iced_test_redo)')
+"
+"  "" Stdout buffer (<Leader>s)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '<Leader>ll', '<Plug>(iced_stdout_buffer_toggle)')
+"  call s:define_mapping('nmap', '<Leader>lc', '<Plug>(iced_stdout_buffer_clear)')
+"  "call s:define_mapping('nmap', '<Leader>so', '<Plug>(iced_stdout_buffer_open)')
+"  "call s:define_mapping('nmap', '<Leader>sq', '<Plug>(iced_stdout_buffer_close)')
+"
+"  "" Refactoring (<Leader>r)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '<Leader>rcn', '<Plug>(iced_clean_ns)')
+"  call s:define_mapping('nmap', '<Leader>rca', '<Plug>(iced_clean_all)')
+"  call s:define_mapping('nmap', '<Leader>ram', '<Plug>(iced_add_missing)')
+"  call s:define_mapping('nmap', '<Leader>ran', '<Plug>(iced_add_ns)')
+"  call s:define_mapping('nmap', '<Leader>rtf', '<Plug>(iced_thread_first)')
+"  call s:define_mapping('nmap', '<Leader>rtl', '<Plug>(iced_thread_last)')
+"  call s:define_mapping('nmap', '<Leader>ref', '<Plug>(iced_extract_function)')
+"  call s:define_mapping('nmap', '<Leader>raa', '<Plug>(iced_add_arity)')
+"  call s:define_mapping('nmap', '<Leader>rml', '<Plug>(iced_move_to_let)')
+"  call s:define_mapping('nmap', '<Leader>rrs', '<Plug>(iced_rename_symbol)')
+"
+"  "" Help/Document (<Leader>h)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', 'K',          '<Plug>(iced_document_popup_open)')
+"  call s:define_mapping('nmap', '<Leader>hb', '<Plug>(iced_document_open)')
+"  call s:define_mapping('nmap', '<Leader>hu', '<Plug>(iced_use_case_open)')
+"  call s:define_mapping('nmap', '<Leader>hn', '<Plug>(iced_next_use_case)')
+"  call s:define_mapping('nmap', '<Leader>hN', '<Plug>(iced_prev_use_case)')
+"  call s:define_mapping('nmap', '<Leader>hq', '<Plug>(iced_document_close)')
+"  call s:define_mapping('nmap', '<Leader>hS', '<Plug>(iced_source_show)')
+"  call s:define_mapping('nmap', '<Leader>hs', '<Plug>(iced_source_popup_show)')
+"  call s:define_mapping('nmap', '<Leader>hc', '<Plug>(iced_clojuredocs_open)')
+"  call s:define_mapping('nmap', '<Leader>hh', '<Plug>(iced_command_palette)')
+"
+"  "" Browsing (<Leader>b)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '<Leader>bn',  '<Plug>(iced_browse_related_namespace)')
+"  call s:define_mapping('nmap', '<Leader>bs',  '<Plug>(iced_browse_spec)')
+"  call s:define_mapping('nmap', '<Leader>bt',  '<Plug>(iced_browse_test_under_cursor)')
+"  call s:define_mapping('nmap', '<Leader>br',  '<Plug>(iced_browse_references)')
+"  call s:define_mapping('nmap', '<Leader>bd',  '<Plug>(iced_browse_dependencies)')
+"
+"  "" Jumping cursor (<Leader>j)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '<C-]>',      '<Plug>(iced_def_jump)')
+"  call s:define_mapping('nmap', '<Leader>jn', '<Plug>(iced_jump_to_next_sign)')
+"  call s:define_mapping('nmap', '<Leader>jN', '<Plug>(iced_jump_to_prev_sign)')
+"  call s:define_mapping('nmap', '<Leader>jl', '<Plug>(iced_jump_to_let)')
+"
+"  "" Debugging (<Leader>d)
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '<Leader>dbt', '<Plug>(iced_browse_tapped)')
+"  call s:define_mapping('nmap', '<Leader>dlt', '<Plug>(iced_clear_tapped)')
+"
+"  "" Misc
+"  "" ------------------------------------------------------------------------
+"  call s:define_mapping('nmap', '==',         '<Plug>(iced_format)')
+"  call s:define_mapping('nmap', '=G',         '<Plug>(iced_format_all)')
+"  "call s:define_mapping('nmap', '<Leader>*',  '<Plug>(iced_grep)')
+"  "call s:define_mapping('nmap', '<Leader>/',  ':<C-u>IcedGrep<Space>')
+"  call s:define_mapping('nmap', '<Leader>yn', '<Plug>(iced_yank_ns_name)')
+"endfunction
+"
+"if exists('g:iced_unable_default_key_mappings')
+"      \ && g:iced_unable_default_key_mappings
+"  silent! call s:default_key_mappings()
+"  aug iced_default_key_mappings
+"    au!
+"    au FileType clojure call s:default_key_mappings()
+"  aug END
+"endif
+"
+"
+""----------------------------
+"" #vim-iced-fern-debugger
+""----------------------------
 "let g:iced#debug#debugger = 'fern'
+"
+"
+""----------------------------
+"" #vim-fennel
+""----------------------------
+"" highlight Fennel compiler environment-only functions
+"let g:fennel_highlight_compiler = 1
+"
+"" highlight Olical/aniseed keywords
+"let g:fennel_highlight_aniseed = 1
+"
+"" highlight ~ioiojo/kiwi keywords
+"let g:fennel_highlight_kiwi = 1
+"
+"" highlight rxi/lume keywords
+"let g:fennel_highlight_lume = 1
 
 
 "----------------------------
-" #vim-fennel
+" #ghcid
 "----------------------------
-" highlight Fennel compiler environment-only functions
-let g:fennel_highlight_compiler = 1
-
-" highlight Olical/aniseed keywords
-let g:fennel_highlight_aniseed = 1
-
-" highlight ~ioiojo/kiwi keywords
-let g:fennel_highlight_kiwi = 1
-
-" highlight rxi/lume keywords
-let g:fennel_highlight_lume = 1
+nnoremap <leader>l :Ghcid<CR>
 
 
 
@@ -483,7 +863,7 @@ if exists("g:loaded_webdevicons")
 endif
 
 "----------------------------
-" unable 'cursorline'
+" disable 'cursorline'
 "----------------------------
 augroup vimrc-auto-cursorline
 autocmd!
@@ -530,7 +910,7 @@ set encoding=utf-8
 set fileformats=unix,dos,mac
 
 ".viminfo file path
-set viminfo=%,<800,'10,/50,:100,h,f0,n~/.vim/temp/.viminfo
+set viminfo=%,<800,'10,/50,:100,h,f0,n~/.vim/tmp/info/.viminfo
 " swp file directory
 set directory=~/.vim/tmp/swap
 " backup file directory
@@ -577,7 +957,7 @@ set cmdheight=2
 " show command in status line
 set showcmd
 " show title
-set title
+"set title
 
 "----------------------------
 " Tabs & indent
@@ -631,10 +1011,19 @@ nnoremap <silent> <CR> :nohlsearch<CR><CR>
 autocmd QuickFixCmdPost *grep* cwindow
 
 "----------------------------
-" Other Settings
+" Yank
 "----------------------------
 " register yanked string to clipboard
 "set clipboard=unnamedplus
+
+"---------------------------
+" Folding
+"---------------------------
+"set foldmethod=syntax
+""set foldmethod=indent   
+"set foldnestmax=10
+"set foldenable
+"set foldlevel=2
 
 "----------------------------
 " Key mapping
@@ -647,7 +1036,8 @@ noremap : ;
 inoremap <silent> jj <ESC>
 
 " toggle paste mode
-set pastetoggle=<F2>
+"set pastetoggle=<F2>
+nnoremap <F2> :set invpaste<CR>
 
 " reload syntax highlighting
 noremap <F5> <Esc>:syntax sync fromstart<CR>
@@ -683,6 +1073,7 @@ nnoremap sq :<C-u>q<CR>
 nnoremap bd :<C-u>bd<CR>
 nnoremap bZ :<C-u>%bd\|e#\|bd#<CR>\|'"
 
+
 " resizing panes
 " resize height
 nnoremap sdj <C-w>-
@@ -694,3 +1085,7 @@ nnoremap sdl <C-w>>
 
 " Previous buffer
 nnoremap <Leader>` <C-^>
+
+" hide tabline
+set showtabline=0
+nnoremap <silent> <leader>tg :execute 'set showtabline=' . (&showtabline ==# 0 ? 2 : 0)<cr>

@@ -3,7 +3,7 @@
 (setq user-full-name "Ken Nakayama"
       user-mail-address "kn1017356@gmail.com")
 
-(setq doom-theme 'doom-dracula)
+(setq doom-theme 'doom-outrun-electric)
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
 ;;
@@ -13,8 +13,11 @@
 ;;   presentations or streaming.
 ;; - `doom-unicode-font' -- for unicode glyphs
 ;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
-;;(setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
-;;      doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
+(setq doom-font (font-spec :family "Fira Code" :size 15 :weight 'Regular)
+      ;; doom-variable-pitch-font (font-spec :family "Fira Code" :size 12)
+      ;; doom-unicode-font (font-spec :family "Fira Code" :size 12)
+      )
+;; (setq doom-font nil)
 
 (setq display-line-numbers-type t)
 (setq org-directory "~/org/")
@@ -43,7 +46,7 @@
   ;; (add-hook 'cider--debug-mode-hook 'evil-normalize-keymaps)
   ;; (add-hook 'cider--debug-mode-hook '+clojure--cider-setup-debug)
   (add-hook 'cider--debug-mode-hook 'cider-debug-toggle-insert-state)
-  (set-popup-rule! "^\\*cider-repl*" :size 0.4 :side 'bottom :select nil :quit nil :ttl nil)
+  (set-popup-rule! "^\\*cider-repl*" :size 0.5 :side 'right :select nil :quit nil :ttl nil)
   ;;(set-popup-rule! "^\\*cider-error*" :size 0.4 :side 'bottom :select t :quit t)
 
   (setq cljr-assume-language-context 'clj)
@@ -66,10 +69,21 @@
 
 
 ;; Key-mappings
-(require 'key-chord)
-(key-chord-mode 1)
-(setq key-chord-one-key-delay 0.4)
-(key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+;; (require 'key-chord)
+;; (key-chord-mode 1)
+;; (setq key-chord-one-key-delay 0.4)
+;; (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+
+(after! evil
+  (require 'key-chord)
+  (key-chord-mode 1)
+  (setq key-chord-one-key-delay 0.4)
+  (setq key-chord-safety-interval-forward 0.001)
+  (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+  (map! :leader
+        :desc "Clear search highlight"
+        "s c"
+        #'evil-ex-nohighlight))
 
 
 (map! (:localleader
@@ -126,6 +140,10 @@
        :map ivy-minibuffer-map
        "C-d" #'ivy-switch-buffer-kill))
 
+(map! :leader
+      :desc "key map redifined"
+      "Esc" #'switch-to-last-buffer
+      )
 
 (map! :leader
       :desc "Paredit functions"
@@ -148,8 +166,46 @@
       ;; "l v" #'mark-sexp
       )
 
-;; *** clojure functions
 
+;; run-sql
+(defun do-run-sql ()
+  (interactive)
+  (save-excursion
+    ;; Take SQL
+    (search-backward "----")
+    (setq p1 (point))
+    (search-forward  "----")
+    (search-forward  "----")
+    (setq sql (buffer-substring p1 (point)) )
+    ;; Take psql connection string
+    (search-backward "---- db:")
+    (setq conn (substring (buffer-substring (point) (line-end-position)) 8 ))
+
+
+    (write-region (format "\\timing\n%s" sql) nil "/tmp/sql")
+    ;;(setq cmd (format "echo  \"\"\"\n%s\"\"\" | psql %s" (shell-quote-argument sql) conn))
+    ;;(setq cmd (format "psql %s <<EOF\n%s\nEOF " conn sql ))
+
+    (setq cmd (format "psql %s -f /tmp/sql"  conn))
+    ;; print SQL
+    ;;(setq cmd (format "psql %s -f /tmp/sql -E"  conn))
+
+    (with-output-to-temp-buffer "*SQL Result*"
+      (set-buffer "*SQL Result*")
+      (funcall (intern "sql-mode"))
+      ;;(insert  cmd)
+      (insert (shell-command-to-string cmd)))))
+
+(defun run-sql ()
+    (interactive)
+    (if (equal major-mode 'sql-mode)
+        (do-run-sql))
+    )
+
+(define-key evil-normal-state-map (kbd "RET") 'run-sql)
+
+
+;; persist-scope
 (defun qdzo-clj-insert-persist-scope-macro ()
   (interactive)
   (insert
@@ -199,12 +255,12 @@
 ;; (setq lsp-log-io nil)
 
 ;; zen-lsp
-;; (require 'lsp-mode)
+(require 'lsp-mode)
 
-;; (lsp-register-client
-;;  (make-lsp-client
-;;   :new-connection (lsp-stdio-connection "/home/ken/projects/hs/zen-lsp/vscode-extension/debug-srv")
-;;   :major-modes '(clojure-mode)
-;;   :add-on? t
-;;   :activation-fn (lsp-activate-on "clojure")
-;;   :server-id 'zen-lang))
+(lsp-register-client
+ (make-lsp-client
+  :new-connection (lsp-stdio-connection "/home/ken/projects/hs/zen-lsp/vscode-extension/debug-srv")
+  :major-modes '(clojure-mode)
+  :add-on? t
+  :activation-fn (lsp-activate-on "clojure")
+  :server-id 'zen-lang))

@@ -56,7 +56,20 @@
   :pin "bbc60f68ac190f02da8a100b6fb67cf1c27c53ab"
   :recipe (:host github :repo "magit/with-editor"))
 
-(unpin! cider)
-(unpin! straight)
 
+(unpin! cider clojure-mode clj-refactor)
+(unpin! jet neil)
+
+(unpin! straight)
 (package! key-chord)
+
+;; (package! clojure-mode :pin "3453cd229b412227aaffd1dc2870fa8fa213c5b1")
+;; (package! clj-refactor :pin "b5abe655e572a6ecfed02bb8164b64716ef76b8e")
+;; (package! cider :pin "1ed5163433c991c00ea83fdd4447e8daf4aeccbe")
+;; (when (and (modulep! :checkers syntax)
+;;            (not (modulep! :checkers syntax +flymake)))
+;;   (package! flycheck-clj-kondo :pin "ff7bed2315755cfe02ef471edf522e27b78cd5ca"))
+;; (package! jet :pin "f007660c568e924e32d486a02aa4cd18203313cc")
+;; (package! neil
+;;   :recipe (:host github :repo "babashka/neil" :files ("*.el"))
+;;   :pin "1dbac785cee4af8ad499839adbb83a8a297e7c70")

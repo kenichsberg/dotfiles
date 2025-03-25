@@ -503,7 +503,8 @@ xmap <silent> <Leader>c       <Plug>(coc-codeaction-selected)
 nmap <silent> <Leader>c       <Plug>(coc-codeaction-line)
 nmap <silent> gd              <Plug>(coc-definition)
 
-"" vim-iced function! s:define_mapping(map_type, default_keys, plug_name) abort if !hasmapto(a:plug_name)
+"" vim-iced
+"function! s:define_mapping(map_type, default_keys, plug_name) abort if !hasmapto(a:plug_name)
 "    let keys = substitute(a:default_keys, '<Leader>', g:iced_default_key_mapping_leader, '')
 "    let cmd = printf('%s <buffer> %s %s',
 "          \ a:map_type,

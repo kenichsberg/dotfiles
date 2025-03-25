@@ -26,39 +26,11 @@ zinit light romkatv/powerlevel10k
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 
-########################
-# original scripts
-########################
-# locale
-export LC_ALL="en_US.UTF-8"
-export LANG="en_US.UTF-8"
-export LANGUAGE="en_US.UTF-8"
-
-# aliases
-alias ls='ls --color=auto -laFh'
-alias lg='lazygit'
-alias mkubectl="minikube kubectl --"
-alias kubectl="minikube kubectl --"
-alias vi='nvim'
-
-# zsh-autosuggestions
-source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=5'
-
-# .zsh_history
-HISTFILE=~/.zsh_history
-HISTSIZE=500000
-SAVEHIST=500000
-setopt appendhistory
-setopt INC_APPEND_HISTORY  
-setopt SHARE_HISTORY
-
-# terraforrm
-autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /usr/bin/terraform terraform
-
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/home/ken/google-cloud-sdk/path.zsh.inc' ]; then . '/home/ken/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/home/ken/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/ken/google-cloud-sdk/completion.zsh.inc'; fi
+
+[ -f "/home/ken/.ghcup/env" ] && . "/home/ken/.ghcup/env" # ghcup-env
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
