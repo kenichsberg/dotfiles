@@ -29,3 +29,6 @@ ln -sf ~/dotfiles/.tmux.conf ~/
 mkdir -p ~/.config/clj-kondo
 ln -sf ~/dotfiles/clojure/clj-kondo/config.edn ~/.config/clj-kondo/
 ln -sf ~/dotfiles/clojure/clj-kondo/extra-config.edn ~/.config/clj-kondo/
+
+mkdir -p ~/.clojure
+ln -sf ~/dotfiles/clojure/deps.edn ~/.clojure/deps.edn
